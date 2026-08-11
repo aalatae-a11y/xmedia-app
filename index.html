@@ -2,20 +2,30 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>X-Media</title>
+    <title>X-Media | منظومة الإعلانات</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-100 p-4">
+
+    <!-- القسم العام: الحاسبة -->
+    <div class="max-w-md mx-auto bg-white p-6 rounded-xl shadow-lg mb-6">
+        <h1 class="text-xl font-bold mb-4 text-blue-600">حاسبة الإعلانات</h1>
+        <input type="number" id="pub-amount" placeholder="قيمة الإعلان ($)" class="w-full border p-2 mb-2 rounded">
+        <button onclick="calculate()" class="w-full bg-green-600 text-white p-2 rounded">احسب التكلفة</button>
+        <div id="result" class="mt-4 font-bold text-lg"></div>
+    </div>
+
+    <!-- القسم الداخلي: الإعدادات -->
     <div class="max-w-md mx-auto bg-white p-6 rounded-xl shadow-lg">
-        <h1 class="text-xl font-bold mb-4">إعدادات المنظومة</h1>
-        <input type="number" id="rate-input" class="w-full border p-2 mb-2" placeholder="سعر الدولار">
+        <h1 class="text-xl font-bold mb-4 text-red-600">المنظومة الداخلية</h1>
+        <input type="number" id="rate-input" class="w-full border p-2 mb-2 rounded" placeholder="سعر الدولار">
         <button onclick="saveRate()" class="w-full bg-blue-600 text-white p-2 rounded">حفظ السعر</button>
-        <div id="status" class="mt-4 text-sm font-bold"></div>
+        <div id="status" class="mt-2 text-sm"></div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCeRCQr0KSM9uUVVxa-DJbAc4epzRjCNDM",
@@ -29,15 +39,29 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
+        // متغير لتخزين السعر
+        let currentRate = 7.45;
+
+        // جلب السعر تلقائياً
+        onSnapshot(doc(db, "settings", "config"), (doc) => {
+            if (doc.exists()) {
+                currentRate = doc.data().exchangeRate;
+                document.getElementById('rate-input').value = currentRate;
+            }
+        });
+
+        // دالة الحفظ (اللي جربناها ونجحت)
         window.saveRate = async () => {
             const val = parseFloat(document.getElementById('rate-input').value);
-            try {
-                await setDoc(doc(db, "settings", "config"), { exchangeRate: val }, { merge: true });
-                document.getElementById('status').innerText = "تم الحفظ بنجاح!";
-                document.getElementById('status').className = "mt-4 text-green-600";
-            } catch (e) {
-                document.getElementById('status').innerText = "خطأ: " + e.message;
-            }
+            await setDoc(doc(db, "settings", "config"), { exchangeRate: val }, { merge: true });
+            document.getElementById('status').innerText = "تم الحفظ بنجاح!";
+        };
+
+        // دالة الحساب
+        window.calculate = () => {
+            const usd = parseFloat(document.getElementById('pub-amount').value);
+            const total = usd * currentRate * 1.20;
+            document.getElementById('result').innerText = "المبلغ المطلوب: " + total.toFixed(2) + " د.ل";
         };
     </script>
 </body>
