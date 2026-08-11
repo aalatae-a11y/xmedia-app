@@ -23,10 +23,10 @@
                 <span class="text-xs bg-slate-800 text-gray-300 px-2 py-1 rounded border border-slate-700">النسخة السحابية</span>
             </div>
             <div class="flex gap-2">
-                <button onclick="openTab('public')" id="nav-public" class="px-4 py-2 rounded-lg text-sm font-bold bg-gold text-white transition">
+                <button id="nav-public" onclick="switchTab('public')" class="px-4 py-2 rounded-lg text-sm font-bold bg-gold text-white transition cursor-pointer">
                     <i class="fas fa-calculator ml-1"></i> حاسبة الزبون
                 </button>
-                <button onclick="openTab('admin')" id="nav-admin" class="px-4 py-2 rounded-lg text-sm font-bold bg-slate-800 text-gray-300 hover:text-white transition">
+                <button id="nav-admin" onclick="switchTab('admin')" class="px-4 py-2 rounded-lg text-sm font-bold bg-slate-800 text-gray-300 hover:text-white transition cursor-pointer">
                     <i class="fas fa-user-lock ml-1"></i> المنظومة الداخلية
                 </button>
             </div>
@@ -45,14 +45,14 @@
                 <div>
                     <label class="block text-sm font-bold mb-2">قيمة الإعلان المطلوبة بالدولار ($)</label>
                     <div class="relative">
-                        <input type="number" id="pub-amount" value="10" min="1" step="1" oninput="doCalculate()" class="w-full border-2 border-gray-300 rounded-xl p-3 text-lg font-bold focus:border-gold outline-none pl-10">
+                        <input type="number" id="pub-amount" value="10" min="1" step="1" oninput="runCalculation()" class="w-full border-2 border-gray-300 rounded-xl p-3 text-lg font-bold focus:border-gold outline-none pl-10">
                         <span class="absolute left-4 top-3.5 text-gray-400 font-bold">$</span>
                     </div>
                 </div>
 
                 <div>
                     <label class="block text-sm font-bold mb-2">مدة الإعلان (بالأيام)</label>
-                    <input type="number" id="pub-days" value="2" min="1" step="1" oninput="doCalculate()" class="w-full border-2 border-gray-300 rounded-xl p-3 text-lg font-bold focus:border-gold outline-none">
+                    <input type="number" id="pub-days" value="2" min="1" step="1" oninput="runCalculation()" class="w-full border-2 border-gray-300 rounded-xl p-3 text-lg font-bold focus:border-gold outline-none">
                 </div>
 
                 <div>
@@ -77,10 +77,10 @@
 
                 <!-- Actions Buttons -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-2">
-                    <button onclick="doCalculate()" class="w-full bg-slate-700 hover:bg-slate-800 text-white font-bold py-3 rounded-xl transition flex items-center justify-center gap-2 text-sm">
+                    <button type="button" onclick="runCalculation()" class="w-full bg-slate-700 hover:bg-slate-800 text-white font-bold py-3 rounded-xl transition flex items-center justify-center gap-2 text-sm cursor-pointer">
                         <i class="fas fa-calculator"></i> حساب التكلفة فقط
                     </button>
-                    <button onclick="doSubmitOrder()" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-xl shadow transition flex items-center justify-center gap-2 text-sm">
+                    <button type="button" onclick="handleOrderSubmit()" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-xl shadow transition flex items-center justify-center gap-2 text-sm cursor-pointer">
                         <i class="fab fa-whatsapp text-lg"></i> تأكيد الطلب وحجز الإعلان
                     </button>
                 </div>
@@ -97,7 +97,7 @@
             <h2 class="text-xl font-bold mb-2">المنظومة الداخلية المحمية</h2>
             <p class="text-xs text-gray-500 mb-6">أدخل الرمز السري للوصول</p>
             <input type="password" id="pin-input" maxlength="4" placeholder="••••" class="text-center text-2xl border-2 rounded-xl p-3 w-48 mb-4 focus:border-gold outline-none">
-            <button onclick="checkPin()" class="w-full bg-navy text-white font-bold py-3 rounded-xl hover:bg-slate-800 transition">دخول</button>
+            <button type="button" onclick="verifyPinCode()" class="w-full bg-navy text-white font-bold py-3 rounded-xl hover:bg-slate-800 transition cursor-pointer">دخول</button>
         </div>
 
         <!-- Main Admin Dashboard -->
@@ -109,7 +109,7 @@
                     <h3 class="font-bold text-gray-700 text-sm mb-3"><i class="fas fa-coins text-gold ml-1"></i> سعر شراء الدولار اليوم (USD -> LYD)</h3>
                     <div class="flex gap-2">
                         <input type="number" step="0.01" id="admin-rate-input" class="border rounded-lg p-2 font-bold w-full text-lg outline-none focus:border-gold" placeholder="7.45">
-                        <button onclick="saveRate()" class="bg-navy text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-slate-800">حفظ</button>
+                        <button type="button" onclick="handleUpdateRate()" class="bg-navy text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-slate-800 cursor-pointer">حفظ</button>
                     </div>
                     <span class="text-[10px] text-gray-400 block mt-2">* سعر الزبون يحسب تلقائياً بزيادة 20% أرباح.</span>
                 </div>
@@ -134,7 +134,7 @@
                     <h3 class="font-bold text-gray-700 text-sm mb-2"><i class="fas fa-plus-circle text-green-600 ml-1"></i> شحن سريع للنوران</h3>
                     <div class="flex gap-2">
                         <input type="number" id="recharge-amount" placeholder="المبلغ $" class="border rounded-lg p-2 w-full text-sm outline-none">
-                        <button onclick="doRecharge()" class="bg-green-600 text-white px-3 py-2 rounded-lg text-sm font-bold hover:bg-green-700">شحن وتفريغ</button>
+                        <button type="button" onclick="handleRecharge()" class="bg-green-600 text-white px-3 py-2 rounded-lg text-sm font-bold hover:bg-green-700 cursor-pointer">شحن وتفريغ</button>
                     </div>
                     <span class="text-[10px] text-gray-400 block mt-2">* يتم تحويل الشحن فوراً لـ مدير الإعلانات وتصفير النوران تلقائياً.</span>
                 </div>
@@ -172,49 +172,49 @@
         </div>
     </section>
 
-    <!-- Pure JS Interface Control -->
+    <!-- Global State Variables & Local Handlers -->
     <script>
-        var globalRate = 7.45;
-        var globalAdManagerBal = 0;
+        window.EXCHANGE_RATE = 7.45;
+        window.AD_MANAGER_BAL = 0;
 
-        function openTab(tab) {
+        function switchTab(tab) {
             if (tab === 'public') {
-                document.getElementById('public-section').style.display = 'block';
-                document.getElementById('admin-section').style.display = 'none';
-                document.getElementById('nav-public').className = 'px-4 py-2 rounded-lg text-sm font-bold bg-gold text-white transition';
-                document.getElementById('nav-admin').className = 'px-4 py-2 rounded-lg text-sm font-bold bg-slate-800 text-gray-300 hover:text-white transition';
+                document.getElementById('public-section').classList.remove('hidden');
+                document.getElementById('admin-section').classList.add('hidden');
+                document.getElementById('nav-public').className = 'px-4 py-2 rounded-lg text-sm font-bold bg-gold text-white transition cursor-pointer';
+                document.getElementById('nav-admin').className = 'px-4 py-2 rounded-lg text-sm font-bold bg-slate-800 text-gray-300 hover:text-white transition cursor-pointer';
             } else {
-                document.getElementById('public-section').style.display = 'none';
-                document.getElementById('admin-section').style.display = 'block';
-                document.getElementById('nav-admin').className = 'px-4 py-2 rounded-lg text-sm font-bold bg-gold text-white transition';
-                document.getElementById('nav-public').className = 'px-4 py-2 rounded-lg text-sm font-bold bg-slate-800 text-gray-300 hover:text-white transition';
+                document.getElementById('public-section').classList.add('hidden');
+                document.getElementById('admin-section').classList.remove('hidden');
+                document.getElementById('nav-admin').className = 'px-4 py-2 rounded-lg text-sm font-bold bg-gold text-white transition cursor-pointer';
+                document.getElementById('nav-public').className = 'px-4 py-2 rounded-lg text-sm font-bold bg-slate-800 text-gray-300 hover:text-white transition cursor-pointer';
             }
         }
 
-        function checkPin() {
-            var pin = document.getElementById('pin-input').value;
-            if (pin === "5412") {
-                document.getElementById('pin-overlay').style.display = 'none';
-                document.getElementById('admin-content').style.display = 'block';
+        function verifyPinCode() {
+            var inputPin = document.getElementById('pin-input').value;
+            if (inputPin === "5412") {
+                document.getElementById('pin-overlay').classList.add('hidden');
+                document.getElementById('admin-content').classList.remove('hidden');
             } else {
                 alert('الرمز السري غير صحيح!');
             }
         }
 
-        function doCalculate() {
+        function runCalculation() {
             var usd = parseFloat(document.getElementById('pub-amount').value) || 0;
             var days = parseInt(document.getElementById('pub-days').value) || 1;
             var valMsg = document.getElementById('validation-msg');
 
-            var customerRate = globalRate * 1.20;
+            var customerRate = window.EXCHANGE_RATE * 1.20;
             var totalLyd = usd * customerRate;
-            var perDayLyd = totalLyd / (days || 1);
-            var usdPerDay = usd / (days || 1);
+            var perDayLyd = totalLyd / days;
+            var usdPerDay = usd / days;
 
-            if (usd > 0 && days > 0 && (usdPerDay % 1 !== 0)) {
-                valMsg.style.display = 'block';
+            if (usd > 0 && days > 0 && (usd % days !== 0)) {
+                valMsg.classList.remove('hidden');
             } else {
-                valMsg.style.display = 'none';
+                valMsg.classList.add('hidden');
             }
 
             document.getElementById('pub-total-lyd').innerText = totalLyd.toFixed(2) + " د.ل";
@@ -222,13 +222,12 @@
             document.getElementById('pub-usd-per-day').innerText = "$" + usdPerDay.toFixed(2);
         }
 
-        // Run calculation on load
         window.onload = function() {
-            doCalculate();
+            runCalculation();
         };
     </script>
 
-    <!-- Firebase Script for DB operations -->
+    <!-- Firebase System Logic -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, collection, addDoc, onSnapshot, doc, setDoc, updateDoc, serverTimestamp, query, orderBy } 
@@ -246,30 +245,42 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // Global Bindings
-        window.saveRate = async function() {
+        // Bind Firebase Actions to Window
+        window.handleUpdateRate = async function() {
             var newRate = parseFloat(document.getElementById('admin-rate-input').value);
             if (newRate > 0) {
-                await updateDoc(doc(db, "settings", "config"), { exchangeRate: newRate });
-                alert("تم تحديث سعر الصرف اليومي بنجاح!");
+                try {
+                    await setDoc(doc(db, "settings", "config"), { exchangeRate: newRate, adManagerBalance: window.AD_MANAGER_BAL }, { merge: true });
+                    alert("تم تحديث سعر الصرف اليومي بنجاح!");
+                } catch(e) {
+                    alert("حدث خطأ أثناء الاتصال بقاعدة البيانات!");
+                }
+            } else {
+                alert("يرجى إدخال سعر صرف صحيح!");
             }
         };
 
-        window.doRecharge = async function() {
+        window.handleRecharge = async function() {
             var amt = parseFloat(document.getElementById('recharge-amount').value) || 0;
             if (amt > 0) {
-                var newBal = window.globalAdManagerBal + amt;
-                await updateDoc(doc(db, "settings", "config"), { adManagerBalance: newBal });
-                document.getElementById('recharge-amount').value = '';
-                alert("تم شحن $" + amt + " وتفريغها تلقائياً لمدير الإعلانات!");
+                try {
+                    var newBal = window.AD_MANAGER_BAL + amt;
+                    await setDoc(doc(db, "settings", "config"), { adManagerBalance: newBal, exchangeRate: window.EXCHANGE_RATE }, { merge: true });
+                    document.getElementById('recharge-amount').value = '';
+                    alert("تم شحن $" + amt + " وتفريغها أوتوماتيكياً لمدير الإعلانات!");
+                } catch(e) {
+                    alert("حدث خطأ أثناء الشحن!");
+                }
+            } else {
+                alert("يرجى إدخال مبلغ شحن أكبر من 0!");
             }
         };
 
-        window.doSubmitOrder = async function() {
+        window.handleOrderSubmit = async function() {
             var usd = parseFloat(document.getElementById('pub-amount').value) || 0;
             var days = parseInt(document.getElementById('pub-days').value) || 0;
             var link = document.getElementById('pub-link').value.trim();
-            var customerRate = window.globalRate * 1.20;
+            var customerRate = window.EXCHANGE_RATE * 1.20;
             var totalLyd = usd * customerRate;
 
             if (usd <= 0 || days <= 0) {
@@ -282,8 +293,7 @@
                 return;
             }
 
-            var usdPerDay = usd / days;
-            if (usdPerDay % 1 !== 0) {
+            if (usd % days !== 0) {
                 alert("عذراً، يجب أن يكون تقسيم الدولارات على الأيام عدداً صحيحاً بدون فواصل (مثلاً: 10$ على يومين)!");
                 return;
             }
@@ -298,29 +308,31 @@
                     createdAt: serverTimestamp()
                 });
                 
+                var usdPerDay = usd / days;
                 var msg = "مرحباً X-Media! أرغب في حجز إعلان بالتفاصيل التالية:\n- القيمة: $" + usd + "\n- المدة: " + days + " أيام ($" + usdPerDay + "/يوم)\n- المبلغ الإجمالي: " + totalLyd.toFixed(2) + " د.ل\n- الرابط: " + link;
                 
                 window.open("https://wa.me/?text=" + encodeURIComponent(msg), '_blank');
             } catch (e) {
-                alert("حدث خطأ أثناء إرسال الطلب!");
+                alert("حدث خطأ أثناء حفظ الطلب!");
             }
         };
 
-        // DB Sync
+        // Realtime Config Sync
         onSnapshot(doc(db, "settings", "config"), (docSnap) => {
             if (docSnap.exists()) {
                 const data = docSnap.data();
-                window.globalRate = data.exchangeRate || 7.45;
-                window.globalAdManagerBal = data.adManagerBalance || 0;
+                window.EXCHANGE_RATE = data.exchangeRate || 7.45;
+                window.AD_MANAGER_BAL = data.adManagerBalance || 0;
                 
-                document.getElementById('admin-rate-input').value = window.globalRate;
-                document.getElementById('ad-manager-bal').innerText = "$" + window.globalAdManagerBal.toFixed(2);
-                window.doCalculate();
+                document.getElementById('admin-rate-input').value = window.EXCHANGE_RATE;
+                document.getElementById('ad-manager-bal').innerText = "$" + window.AD_MANAGER_BAL.toFixed(2);
+                window.runCalculation();
             } else {
                 setDoc(doc(db, "settings", "config"), { exchangeRate: 7.45, adManagerBalance: 0 });
             }
         });
 
+        // Realtime Orders Table
         const q = query(collection(db, "orders"), orderBy("createdAt", "desc"));
         onSnapshot(q, (snapshot) => {
             const table = document.getElementById("admin-orders-table");
@@ -352,20 +364,4 @@
                     <td class="p-3 font-bold text-navy">$${data.amountUsd}</td>
                     <td class="p-3">${data.days} أيام</td>
                     <td class="p-3 font-bold text-gold">${data.totalLyd.toFixed(2)} د.ل</td>
-                    <td class="p-3">${linkHtml}</td>
-                    <td class="p-3">${statusBadge}</td>
-                    <td class="p-3 text-center" id="action-cell-${id}"></td>
-                `;
-                table.appendChild(tr);
-
-                const actionCell = document.getElementById(`action-cell-${id}`);
-                if (data.status === 'new') {
-                    const btn = document.createElement('button');
-                    btn.className = "bg-green-600 text-white px-3 py-1 rounded text-xs font-bold hover:bg-green-700 cursor-pointer";
-                    btn.innerText = "تفعيل الإعلان";
-                    btn.onclick = async () => {
-                        if (window.globalAdManagerBal < data.amountUsd) {
-                            alert("رصيد مدير الإعلانات غير كافٍ لتفعيل هذا الإعلان!");
-                            return;
-                        }
-                        const newBal =
+                    <td class="p-3">${lin
