@@ -23,10 +23,10 @@
                 <span class="text-xs bg-slate-800 text-gray-300 px-2 py-1 rounded border border-slate-700">النسخة السحابية</span>
             </div>
             <div class="flex gap-2">
-                <button onclick="switchTab('public')" id="tab-public" class="px-4 py-2 rounded-lg text-sm font-bold bg-gold text-white transition">
+                <button id="btn-tab-public" class="px-4 py-2 rounded-lg text-sm font-bold bg-gold text-white transition cursor-pointer">
                     <i class="fas fa-calculator ml-1"></i> حاسبة الزبون
                 </button>
-                <button onclick="switchTab('admin')" id="tab-admin" class="px-4 py-2 rounded-lg text-sm font-bold bg-slate-800 text-gray-300 hover:text-white transition">
+                <button id="btn-tab-admin" class="px-4 py-2 rounded-lg text-sm font-bold bg-slate-800 text-gray-300 hover:text-white transition cursor-pointer">
                     <i class="fas fa-user-lock ml-1"></i> المنظومة الداخلية
                 </button>
             </div>
@@ -45,14 +45,14 @@
                 <div>
                     <label class="block text-sm font-bold mb-2">قيمة الإعلان المطلوبة بالدولار ($)</label>
                     <div class="relative">
-                        <input type="number" id="pub-amount" value="10" min="1" step="1" oninput="calculatePublic()" class="w-full border-2 border-gray-300 rounded-xl p-3 text-lg font-bold focus:border-gold outline-none pl-10">
+                        <input type="number" id="pub-amount" value="10" min="1" step="1" class="w-full border-2 border-gray-300 rounded-xl p-3 text-lg font-bold focus:border-gold outline-none pl-10">
                         <span class="absolute left-4 top-3.5 text-gray-400 font-bold">$</span>
                     </div>
                 </div>
 
                 <div>
                     <label class="block text-sm font-bold mb-2">مدة الإعلان (بالأيام)</label>
-                    <input type="number" id="pub-days" value="2" min="1" step="1" oninput="calculatePublic()" class="w-full border-2 border-gray-300 rounded-xl p-3 text-lg font-bold focus:border-gold outline-none">
+                    <input type="number" id="pub-days" value="2" min="1" step="1" class="w-full border-2 border-gray-300 rounded-xl p-3 text-lg font-bold focus:border-gold outline-none">
                 </div>
 
                 <div>
@@ -77,10 +77,10 @@
 
                 <!-- Actions Buttons -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-2">
-                    <button onclick="calculatePublic()" class="w-full bg-slate-700 hover:bg-slate-800 text-white font-bold py-3 rounded-xl transition flex items-center justify-center gap-2 text-sm">
+                    <button id="btn-calc-only" class="w-full bg-slate-700 hover:bg-slate-800 text-white font-bold py-3 rounded-xl transition flex items-center justify-center gap-2 text-sm">
                         <i class="fas fa-calculator"></i> حساب التكلفة فقط
                     </button>
-                    <button onclick="submitOrder()" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-xl shadow transition flex items-center justify-center gap-2 text-sm">
+                    <button id="btn-submit-order" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-xl shadow transition flex items-center justify-center gap-2 text-sm">
                         <i class="fab fa-whatsapp text-lg"></i> تأكيد الطلب وحجز الإعلان
                     </button>
                 </div>
@@ -97,7 +97,7 @@
             <h2 class="text-xl font-bold mb-2">المنظومة الداخلية المحمية</h2>
             <p class="text-xs text-gray-500 mb-6">أدخل الرمز السري للوصول</p>
             <input type="password" id="pin-input" maxlength="4" placeholder="••••" class="text-center text-2xl border-2 rounded-xl p-3 w-48 mb-4 focus:border-gold outline-none">
-            <button onclick="verifyPin()" class="w-full bg-navy text-white font-bold py-3 rounded-xl hover:bg-slate-800 transition">دخول</button>
+            <button id="btn-verify-pin" class="w-full bg-navy text-white font-bold py-3 rounded-xl hover:bg-slate-800 transition">دخول</button>
         </div>
 
         <!-- Main Admin Dashboard -->
@@ -109,7 +109,7 @@
                     <h3 class="font-bold text-gray-700 text-sm mb-3"><i class="fas fa-coins text-gold ml-1"></i> سعر شراء الدولار اليوم (USD -> LYD)</h3>
                     <div class="flex gap-2">
                         <input type="number" step="0.01" id="admin-rate-input" class="border rounded-lg p-2 font-bold w-full text-lg outline-none focus:border-gold" placeholder="7.45">
-                        <button onclick="updateExchangeRate()" class="bg-navy text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-slate-800">حفظ</button>
+                        <button id="btn-update-rate" class="bg-navy text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-slate-800">حفظ</button>
                     </div>
                     <span class="text-[10px] text-gray-400 block mt-2">* سعر الزبون يحسب تلقائياً بزيادة 20% أرباح.</span>
                 </div>
@@ -134,7 +134,7 @@
                     <h3 class="font-bold text-gray-700 text-sm mb-2"><i class="fas fa-plus-circle text-green-600 ml-1"></i> شحن سريع للنوران</h3>
                     <div class="flex gap-2">
                         <input type="number" id="recharge-amount" placeholder="المبلغ $" class="border rounded-lg p-2 w-full text-sm outline-none">
-                        <button onclick="rechargeNuran()" class="bg-green-600 text-white px-3 py-2 rounded-lg text-sm font-bold hover:bg-green-700">شحن وتفريغ</button>
+                        <button id="btn-recharge" class="bg-green-600 text-white px-3 py-2 rounded-lg text-sm font-bold hover:bg-green-700">شحن وتفريغ</button>
                     </div>
                     <span class="text-[10px] text-gray-400 block mt-2">* يتم تحويل الشحن فوراً لـ مدير الإعلانات وتصفير النوران تلقائياً.</span>
                 </div>
@@ -172,11 +172,13 @@
         </div>
     </section>
 
-    <!-- Firebase Script -->
+    <!-- Firebase & Logic Script -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, collection, addDoc, onSnapshot, doc, setDoc, updateDoc, serverTimestamp, query, orderBy } 
             from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        const MY_SECRET_PIN = "5412";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCeRCQr0KSM9uUVVxa-DJbAc4epzRjCNDM",
@@ -190,72 +192,42 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        window.currentRate = 7.45;
-        window.adManagerBalance = 0;
+        let currentRate = 7.45;
+        let adManagerBalance = 0;
 
-        onSnapshot(doc(db, "settings", "config"), (docSnap) => {
-            if (docSnap.exists()) {
-                const data = docSnap.data();
-                window.currentRate = data.exchangeRate || 7.45;
-                window.adManagerBalance = data.adManagerBalance || 0;
-                
-                document.getElementById('admin-rate-input').value = window.currentRate;
-                document.getElementById('ad-manager-bal').innerText = "$" + window.adManagerBalance.toFixed(2);
-                calculatePublic();
+        // --- TAB SWITCHING ---
+        document.getElementById('btn-tab-public').addEventListener('click', () => {
+            document.getElementById('public-section').classList.remove('hidden');
+            document.getElementById('admin-section').classList.add('hidden');
+            document.getElementById('btn-tab-public').className = 'px-4 py-2 rounded-lg text-sm font-bold bg-gold text-white transition cursor-pointer';
+            document.getElementById('btn-tab-admin').className = 'px-4 py-2 rounded-lg text-sm font-bold bg-slate-800 text-gray-300 hover:text-white transition cursor-pointer';
+        });
+
+        document.getElementById('btn-tab-admin').addEventListener('click', () => {
+            document.getElementById('public-section').classList.add('hidden');
+            document.getElementById('admin-section').classList.remove('hidden');
+            document.getElementById('btn-tab-admin').className = 'px-4 py-2 rounded-lg text-sm font-bold bg-gold text-white transition cursor-pointer';
+            document.getElementById('btn-tab-public').className = 'px-4 py-2 rounded-lg text-sm font-bold bg-slate-800 text-gray-300 hover:text-white transition cursor-pointer';
+        });
+
+        // --- VERIFY PIN ---
+        document.getElementById('btn-verify-pin').addEventListener('click', () => {
+            const pin = document.getElementById('pin-input').value;
+            if (pin === MY_SECRET_PIN) {
+                document.getElementById('pin-overlay').classList.add('hidden');
+                document.getElementById('admin-content').classList.remove('hidden');
             } else {
-                setDoc(doc(db, "settings", "config"), { exchangeRate: 7.45, adManagerBalance: 0 });
+                alert('الرمز السري غير صحيح!');
             }
         });
 
-        const q = query(collection(db, "orders"), orderBy("createdAt", "desc"));
-        onSnapshot(q, (snapshot) => {
-            const table = document.getElementById("admin-orders-table");
-            document.getElementById("orders-count").innerText = snapshot.size + " طلبات";
-            
-            if (snapshot.empty) {
-                table.innerHTML = '<tr><td colspan="7" class="text-center p-4 text-gray-400">لا توجد طلبات جارية.</td></tr>';
-                return;
-            }
-
-            table.innerHTML = "";
-            snapshot.forEach((docSnap) => {
-                const data = docSnap.data();
-                const id = docSnap.id;
-                const tr = document.createElement("tr");
-                tr.className = "hover:bg-gray-50";
-
-                const dateStr = data.createdAt ? new Date(data.createdAt.toDate()).toLocaleDateString("ar-LY") : 'الآن';
-                const statusBadge = data.status === 'active' 
-                    ? '<span class="bg-green-100 text-green-800 px-2 py-1 rounded text-xs font-bold">نشط</span>'
-                    : '<span class="bg-yellow-100 text-yellow-800 px-2 py-1 rounded text-xs font-bold">جديد</span>';
-
-                const actionBtn = data.status === 'new'
-                    ? '<button onclick="activateOrder(\'' + id + '\', ' + data.amountUsd + ')" class="bg-green-600 text-white px-3 py-1 rounded text-xs font-bold hover:bg-green-700">تفعيل الإعلان</button>'
-                    : '<span class="text-xs text-gray-400">مفعل</span>';
-
-                const linkHtml = data.link 
-                    ? '<a href="' + data.link + '" target="_blank" class="text-blue-600 hover:underline"><i class="fas fa-external-link-alt"></i> رابط</a>' 
-                    : '-';
-
-                tr.innerHTML = `
-                    <td class="p-3 text-xs">${dateStr}</td>
-                    <td class="p-3 font-bold text-navy">$${data.amountUsd}</td>
-                    <td class="p-3">${data.days} أيام</td>
-                    <td class="p-3 font-bold text-gold">${data.totalLyd.toFixed(2)} د.ل</td>
-                    <td class="p-3">${linkHtml}</td>
-                    <td class="p-3">${statusBadge}</td>
-                    <td class="p-3 text-center">${actionBtn}</td>
-                `;
-                table.appendChild(tr);
-            });
-        });
-
-        window.calculatePublic = () => {
+        // --- CALCULATOR LOGIC ---
+        function calculatePublic() {
             const usd = parseFloat(document.getElementById('pub-amount').value) || 0;
             const days = parseInt(document.getElementById('pub-days').value) || 1;
             const valMsg = document.getElementById('validation-msg');
 
-            const customerRate = window.currentRate * 1.20;
+            const customerRate = currentRate * 1.20;
             const totalLyd = usd * customerRate;
             const perDayLyd = totalLyd / (days || 1);
             const usdPerDay = usd / (days || 1);
@@ -269,13 +241,18 @@
             document.getElementById('pub-total-lyd').innerText = totalLyd.toFixed(2) + " د.ل";
             document.getElementById('pub-per-day').innerText = perDayLyd.toFixed(2) + " د.ل";
             document.getElementById('pub-usd-per-day').innerText = "$" + usdPerDay.toFixed(2);
-        };
+        }
 
-        window.submitOrder = async () => {
+        document.getElementById('pub-amount').addEventListener('input', calculatePublic);
+        document.getElementById('pub-days').addEventListener('input', calculatePublic);
+        document.getElementById('btn-calc-only').addEventListener('click', calculatePublic);
+
+        // --- SUBMIT ORDER ---
+        document.getElementById('btn-submit-order').addEventListener('click', async () => {
             const usd = parseFloat(document.getElementById('pub-amount').value) || 0;
             const days = parseInt(document.getElementById('pub-days').value) || 0;
             const link = document.getElementById('pub-link').value.trim();
-            const customerRate = window.currentRate * 1.20;
+            const customerRate = currentRate * 1.20;
             const totalLyd = usd * customerRate;
 
             if (usd <= 0 || days <= 0) {
@@ -310,57 +287,79 @@
             } catch (e) {
                 alert("حدث خطأ أثناء إرسال الطلب!");
             }
-        };
+        });
 
-        window.updateExchangeRate = async () => {
+        // --- ADMIN ACTIONS ---
+        document.getElementById('btn-update-rate').addEventListener('click', async () => {
             const newRate = parseFloat(document.getElementById('admin-rate-input').value);
             if (newRate > 0) {
                 await updateDoc(doc(db, "settings", "config"), { exchangeRate: newRate });
                 alert("تم تحديث سعر الصرف اليومي بنجاح!");
             }
-        };
+        });
 
-        window.rechargeNuran = async () => {
+        document.getElementById('btn-recharge').addEventListener('click', async () => {
             const amt = parseFloat(document.getElementById('recharge-amount').value) || 0;
             if (amt > 0) {
-                const newBal = window.adManagerBalance + amt;
+                const newBal = adManagerBalance + amt;
                 await updateDoc(doc(db, "settings", "config"), { adManagerBalance: newBal });
                 document.getElementById('recharge-amount').value = '';
                 alert("تم شحن $" + amt + " وتفريغها تلقائياً لمدير الإعلانات!");
             }
-        };
+        });
 
-        window.activateOrder = async (orderId, amountUsd) => {
-            if (window.adManagerBalance < amountUsd) {
-                alert("رصيد مدير الإعلانات غير كافٍ لتفعيل هذا الإعلان!");
+        // --- LISTENERS ---
+        onSnapshot(doc(db, "settings", "config"), (docSnap) => {
+            if (docSnap.exists()) {
+                const data = docSnap.data();
+                currentRate = data.exchangeRate || 7.45;
+                adManagerBalance = data.adManagerBalance || 0;
+                
+                document.getElementById('admin-rate-input').value = currentRate;
+                document.getElementById('ad-manager-bal').innerText = "$" + adManagerBalance.toFixed(2);
+                calculatePublic();
+            } else {
+                setDoc(doc(db, "settings", "config"), { exchangeRate: 7.45, adManagerBalance: 0 });
+            }
+        });
+
+        const q = query(collection(db, "orders"), orderBy("createdAt", "desc"));
+        onSnapshot(q, (snapshot) => {
+            const table = document.getElementById("admin-orders-table");
+            document.getElementById("orders-count").innerText = snapshot.size + " طلبات";
+            
+            if (snapshot.empty) {
+                table.innerHTML = '<tr><td colspan="7" class="text-center p-4 text-gray-400">لا توجد طلبات جارية.</td></tr>';
                 return;
             }
-            const newBal = window.adManagerBalance - amountUsd;
-            await updateDoc(doc(db, "settings", "config"), { adManagerBalance: newBal });
-            await updateDoc(doc(db, "orders", orderId), { status: 'active' });
-            alert("تم تفعيل الإعلان وخصم المبلغ من مدير الإعلانات بنجاح!");
-        };
-    </script>
 
-    <!-- UI Scripts -->
-    <script>
-        const MY_SECRET_PIN = "5412";
+            table.innerHTML = "";
+            snapshot.forEach((docSnap) => {
+                const data = docSnap.data();
+                const id = docSnap.id;
+                const tr = document.createElement("tr");
+                tr.className = "hover:bg-gray-50";
 
-        function switchTab(tab) {
-            if (tab === 'public') {
-                document.getElementById('public-section').classList.remove('hidden');
-                document.getElementById('admin-section').classList.add('hidden');
-                document.getElementById('tab-public').className = 'px-4 py-2 rounded-lg text-sm font-bold bg-gold text-white transition';
-                document.getElementById('tab-admin').className = 'px-4 py-2 rounded-lg text-sm font-bold bg-slate-800 text-gray-300 hover:text-white transition';
-            } else {
-                document.getElementById('public-section').classList.add('hidden');
-                document.getElementById('admin-section').classList.remove('hidden');
-                document.getElementById('tab-admin').className = 'px-4 py-2 rounded-lg text-sm font-bold bg-gold text-white transition';
-                document.getElementById('tab-public').className = 'px-4 py-2 rounded-lg text-sm font-bold bg-slate-800 text-gray-300 hover:text-white transition';
-            }
-        }
+                const dateStr = data.createdAt ? new Date(data.createdAt.toDate()).toLocaleDateString("ar-LY") : 'الآن';
+                const statusBadge = data.status === 'active' 
+                    ? '<span class="bg-green-100 text-green-800 px-2 py-1 rounded text-xs font-bold">نشط</span>'
+                    : '<span class="bg-yellow-100 text-yellow-800 px-2 py-1 rounded text-xs font-bold">جديد</span>';
 
-        function verifyPin() {
-            const pin = document.getElementById('pin-input').value;
-            if (pin === MY_SECRET_PIN) {
-                document.getElementById('pin-overlay').classList.add('hidd
+                const linkHtml = data.link 
+                    ? '<a href="' + data.link + '" target="_blank" class="text-blue-600 hover:underline"><i class="fas fa-external-link-alt"></i> رابط</a>' 
+                    : '-';
+
+                tr.innerHTML = `
+                    <td class="p-3 text-xs">${dateStr}</td>
+                    <td class="p-3 font-bold text-navy">$${data.amountUsd}</td>
+                    <td class="p-3">${data.days} أيام</td>
+                    <td class="p-3 font-bold text-gold">${data.totalLyd.toFixed(2)} د.ل</td>
+                    <td class="p-3">${linkHtml}</td>
+                    <td class="p-3">${statusBadge}</td>
+                    <td class="p-3 text-center" id="action-cell-${id}"></td>
+                `;
+                table.appendChild(tr);
+
+                const actionCell = document.getElementById(`action-cell-${id}`);
+                if (data.status === 'new') {
+                    const bt
