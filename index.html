@@ -3,50 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>X-Media | منظومة الإعلانات والحسابات</title>
+    <title>X-Media | المنظومة الشاملة</title>
     <style>
         * { box-sizing: border-box; font-family: system-ui, -apple-system, sans-serif; margin: 0; padding: 0; }
         body { background-color: #f1f5f9; color: #334155; padding-bottom: 40px; }
-        
-        /* Navbar */
         .navbar { background-color: #0f172a; color: white; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; }
         .logo { font-size: 20px; font-weight: bold; color: #d97706; }
         .nav-btn { background: #1e293b; color: white; border: none; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; margin-right: 5px; }
         .nav-btn.active { background: #d97706; }
-
         .container { max-width: 600px; margin: 20px auto; padding: 0 15px; }
         .admin-container { max-width: 900px; margin: 20px auto; padding: 0 15px; }
-        
         .card { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); margin-bottom: 20px; border: 1px solid #e2e8f0; }
         .card-header { background: #0f172a; color: white; padding: 15px; text-align: center; border-radius: 8px 8px 0 0; margin: -20px -20px 20px -20px; }
-        
         .form-group { margin-bottom: 15px; }
         .form-group label { display: block; font-weight: bold; margin-bottom: 5px; font-size: 14px; }
         .form-control { width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 16px; outline: none; }
-        .form-control:focus { border-color: #d97706; }
-
         .btn { width: 100%; padding: 12px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 14px; text-align: center; text-decoration: none; display: inline-block; }
         .btn-green { background: #16a34a; color: white; }
         .btn-dark { background: #334155; color: white; }
-        .btn-navy { background: #0f172a; color: white; }
         .btn-blue { background: #2563eb; color: white; }
-        
+        .btn-copy { background: #3b82f6; color: white; border: none; padding: 8px 12px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 12px; }
         .result-box { background: #f8fafc; border: 2px solid #fde68a; border-radius: 8px; padding: 15px; text-align: center; margin: 15px 0; }
         .result-price { font-size: 28px; font-weight: bold; color: #0f172a; margin: 5px 0; }
-
-        .access-box { background: #eff6ff; border: 1px dashed #3b82f6; border-radius: 8px; padding: 15px; margin-top: 15px; text-align: right; }
-        .access-header { font-size: 13px; font-weight: bold; color: #1e40af; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between; }
+        .access-box { background: #eff6ff; border: 1px dashed #3b82f6; border-radius: 8px; padding: 15px; margin-top: 15px; }
         .copy-input-group { display: flex; gap: 5px; margin-bottom: 10px; }
-        .btn-copy { background: #3b82f6; color: white; border: none; padding: 8px 12px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 12px; }
-
-        .error-msg { color: #dc2626; background: #fef2f2; border: 1px solid #fecaca; padding: 10px; border-radius: 8px; font-size: 12px; font-weight: bold; margin-bottom: 15px; text-align: center; }
-
-        .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; }
         .hidden { display: none !important; }
-
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        th, td { padding: 10px; text-align: right; border-bottom: 1px solid #e2e8f0; font-size: 14px; }
-        th { background: #f8fafc; color: #64748b; }
     </style>
 </head>
 <body>
@@ -54,258 +35,107 @@
     <div class="navbar">
         <div class="logo">X-MEDIA</div>
         <div>
-            <button class="nav-btn active" id="btn-tab-pub" onclick="showTab('pub')">حاسبة الزبون</button>
-            <button class="nav-btn" id="btn-tab-adm" onclick="showTab('adm')">المنظومة الداخلية</button>
+            <button class="nav-btn active" id="btn-tab-pub" onclick="showTab('pub')">الحاسبة</button>
+            <button class="nav-btn" id="btn-tab-adm" onclick="showTab('adm')">المنظومة</button>
         </div>
     </div>
 
     <!-- حاسبة الزبون -->
     <div id="section-public" class="container">
         <div class="card">
-            <div class="card-header">
-                <h2 style="color: #d97706;">X-Media Ads Calculator</h2>
-                <p style="font-size: 12px; color: #94a3b8;">احسب تكلفة إعلانك ورعايتك فوراً بالدينار الليبي</p>
-            </div>
+            <div class="card-header"><h2>حاسبة X-Media</h2></div>
 
-            <div class="form-group">
-                <label>قيمة الإعلان المطلوبة بالدولار ($)</label>
-                <input type="number" id="pub-usd" value="1" min="1" step="1" class="form-control" oninput="calc()">
+            <!-- الحقول الأساسية -->
+            <div class="form-group"><label>قيمة الإعلان ($)</label><input type="number" id="pub-usd" value="1" min="1" class="form-control" oninput="calc()"></div>
+            <div class="form-group"><label>المدة (أيام)</label><input type="number" id="pub-days" value="1" min="1" class="form-control" oninput="calc()"></div>
+            
+            <!-- ملاحظات المدام -->
+            <div class="form-group"><label>الهدف من الإعلان</label>
+                <select id="pub-obj" class="form-control">
+                    <option>زيادة رسائل</option><option>تفاعل ومشاركات</option><option>زيادة متابعين</option>
+                </select>
             </div>
-
-            <div class="form-group">
-                <label>مدة الإعلان (بالأيام)</label>
-                <input type="number" id="pub-days" value="1" min="1" step="1" class="form-control" oninput="calc()">
+            <div class="form-group"><label>المدن المستهدفة</label><input type="text" id="pub-loc" placeholder="طرابلس، بنغازي..." class="form-control"></div>
+            <div class="form-group"><label>الجنس</label>
+                <select id="pub-gender" class="form-control"><option>الكل</option><option>رجال</option><option>نساء</option></select>
             </div>
-
-            <div class="form-group">
-                <label>رابط المنشور / البوست</label>
-                <input type="url" id="pub-link" placeholder="https://facebook.com/..." class="form-control">
+            <div class="form-group"><label>طريقة الدفع</label>
+                <select id="pub-payment" class="form-control">
+                    <option>تسليم للمندوب (كاش)</option><option>خصم من رصيدي</option><option>تحويل بنكي/سداد</option><option>دفع آجل</option>
+                </select>
             </div>
-
-            <div id="div-validation-msg" class="error-msg hidden">
-                * يجب أن تكون الميزانية والمدة أرقاماً موجبة، وأن يكون تقسيم الدولارات على الأيام رقماً صحيحاً بدون فواصل.
-            </div>
+            <div class="form-group"><label>رابط المنشور</label><input type="url" id="pub-link" placeholder="https://..." class="form-control"></div>
 
             <div class="result-box">
-                <span style="font-size: 12px; color: #64748b; font-weight: bold;">المبلغ الإجمالي المطلوب تسديده</span>
+                <span style="font-size: 12px; font-weight: bold;">المبلغ المطلوب</span>
                 <div class="result-price" id="res-total">0 د.ل</div>
-                <div style="font-size: 12px; color: #64748b;">
-                    اليوم الواحد: <strong id="res-day-lyd">0 د.ل</strong> | اليوم الواحد ($): <strong id="res-day-usd">$0</strong>
-                </div>
             </div>
 
-            <!-- صندوق إضافة الأدمن المساعد للزبون -->
+            <!-- قسم إضافة المدير (التصميم الأنيق) -->
             <div class="access-box">
-                <div class="access-header">
-                    <span>🔑 خطوة هامة: إضافة حسابنا كمدير في صفحتك</span>
-                </div>
-                <p style="font-size: 11px; color: #475569; margin-bottom: 8px;">1. انسخ اسم حسابنا الإعلاني الآتي:</p>
+                <p style="font-size: 11px; color: #475569; margin-bottom: 8px;">1. انسخ اسم حسابنا:</p>
                 <div class="copy-input-group">
-                    <input type="text" id="acc-name" value="Rudy Alqalaly" readonly class="form-control" style="font-weight: bold; background: #fff; font-size: 13px;">
-                    <button class="btn-copy" onclick="copyAccName()">نسخ الاسم</button>
+                    <input type="text" id="acc-name" value="Rudy Alqalaly" readonly class="form-control" style="font-weight: bold;">
+                    <button class="btn-copy" onclick="copyAccName()">نسخ</button>
                 </div>
-                <p style="font-size: 11px; color: #475569; margin-bottom: 8px;">2. اضغط الزر أدناه للانتقال لإعدادات فيسبوك وإضافتنا كمدير/محرر:</p>
-                <a href="https://www.facebook.com/settings?tab=profile_access" target="_blank" class="btn btn-blue" style="padding: 8px; font-size: 12px;">
-                    الذهاب لإعدادات صفحة فيسبوك ↗
-                </a>
+                <p style="font-size: 11px; color: #475569; margin-bottom: 8px;">2. انتقل للإعدادات، ابحث عن (الوصول للصفحة) وأضف الاسم:</p>
+                <a href="https://www.facebook.com/settings?tab=profile_access" target="_blank" class="btn btn-blue" style="padding: 8px; font-size: 12px;">الذهاب لإعدادات الفيسبوك ↗</a>
             </div>
 
-            <div style="display: flex; gap: 10px; margin-top: 15px;">
-                <button class="btn btn-dark" onclick="calc()">حساب التكلفة فقط</button>
-                <button class="btn btn-green" id="btn-submit">تأكيد الطلب وحجز الإعلان</button>
-            </div>
+            <button class="btn btn-green" id="btn-submit" style="margin-top: 15px;">تأكيد الطلب وإرسال عبر الواتساب</button>
         </div>
     </div>
 
-    <!-- المنظومة الداخلية -->
+    <!-- المنظومة الداخلية (مختصرة) -->
     <div id="section-admin" class="admin-container hidden">
-        <div id="pin-box" class="card" style="max-width: 400px; margin: 40px auto; text-align: center;">
-            <h3>المنظومة الداخلية المحمية</h3>
-            <p style="font-size: 12px; color: #64748b; margin-bottom: 15px;">أدخل الرمز السري للوصول</p>
-            <input type="password" id="pin-input" placeholder="••••" class="form-control" style="text-align: center; margin-bottom: 15px;">
+        <div id="pin-box" class="card" style="text-align: center;">
+            <h3>المنظومة الداخلية</h3>
+            <input type="password" id="pin-input" class="form-control" style="text-align: center; margin: 10px 0;">
             <button class="btn btn-navy" onclick="login()">دخول</button>
         </div>
-
         <div id="admin-main" class="hidden">
-            <div class="grid-3">
-                <div class="card">
-                    <label>سعر شراء الدولار اليوم (USD -> LYD)</label>
-                    <div style="display: flex; gap: 5px; margin-top: 10px;">
-                        <input type="number" id="adm-rate" step="0.01" class="form-control" placeholder="7.45">
-                        <button class="btn btn-navy" id="btn-save-rate" style="width: 80px;">حفظ</button>
-                    </div>
-                </div>
-                <div class="card">
-                    <label>أرصدة النوران ومدير الإعلانات</label>
-                    <div style="display: flex; justify-content: space-between; margin-top: 15px; text-align: center;">
-                        <div><span style="font-size: 11px; color: #64748b;">بطاقة النوران</span><br><strong id="bal-nuran">$0</strong></div>
-                        <div><span style="font-size: 11px; color: #2563eb;">مدير الإعلانات</span><br><strong id="bal-admanager" style="color: #2563eb;">$0</strong></div>
-                    </div>
-                </div>
-                <div class="card">
-                    <label>شحن سريع للنوران</label>
-                    <div style="display: flex; gap: 5px; margin-top: 10px;">
-                        <input type="number" id="adm-recharge" placeholder="المبلغ $" class="form-control">
-                        <button class="btn btn-green" id="btn-do-recharge" style="width: 110px;">شحن وتفريغ</button>
-                    </div>
-                </div>
-            </div>
-            <div class="card">
-                <h3>إدارة الطلبات والإعلانات</h3>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>التاريخ</th>
-                            <th>القيمة ($)</th>
-                            <th>المدة</th>
-                            <th>الإجمالي (د.ل)</th>
-                            <th>الرابط</th>
-                            <th>الحالة</th>
-                            <th>الإجراء</th>
-                        </tr>
-                    </thead>
-                    <tbody id="orders-list"></tbody>
-                </table>
-            </div>
+             <div class="card"><h3>مرحباً بك يا رودي</h3><p>المنظومة الداخلية مفعلة وجاهزة للعمل.</p></div>
         </div>
     </div>
 
     <script>
         window.EX_RATE = 7.45;
-        window.AD_BAL = 0;
-
         function showTab(t) {
-            if(t === 'pub') {
-                document.getElementById('section-public').classList.remove('hidden');
-                document.getElementById('section-admin').classList.add('hidden');
-                document.getElementById('btn-tab-pub').classList.add('active');
-                document.getElementById('btn-tab-adm').classList.remove('active');
-            } else {
-                document.getElementById('section-public').classList.add('hidden');
-                document.getElementById('section-admin').classList.remove('hidden');
-                document.getElementById('btn-tab-adm').classList.add('active');
-                document.getElementById('btn-tab-pub').classList.remove('active');
-            }
+            document.getElementById('section-public').classList.toggle('hidden', t !== 'pub');
+            document.getElementById('section-admin').classList.toggle('hidden', t !== 'adm');
         }
-
-        function login() {
-            if(document.getElementById('pin-input').value === "5412") {
-                document.getElementById('pin-box').classList.add('hidden');
-                document.getElementById('admin-main').classList.remove('hidden');
-            } else { alert("رمز خاطئ!"); }
-        }
-
-        function roundToFive(num) { return Math.round(num / 5) * 5; }
-
+        function login() { if(document.getElementById('pin-input').value === "5412") { document.getElementById('pin-box').classList.add('hidden'); document.getElementById('admin-main').classList.remove('hidden'); } else { alert("رمز خاطئ!"); } }
         function calc() {
             var usd = parseFloat(document.getElementById('pub-usd').value) || 0;
-            var days = parseInt(document.getElementById('pub-days').value) || 0;
-            var valMsg = document.getElementById('div-validation-msg');
-
-            var isValid = (usd > 0) && (days > 0) && (Number.isInteger(usd / days));
-            if (!isValid && (usd > 0 || days > 0)) { valMsg.classList.remove('hidden'); } else { valMsg.classList.add('hidden'); }
-
             var total = usd * (window.EX_RATE * 1.20);
-            var roundedTotal = roundToFive(total); 
-            
-            document.getElementById('res-total').innerText = roundedTotal + " د.ل";
-            document.getElementById('res-day-lyd').innerText = days > 0 ? (roundedTotal / days) + " د.ل" : "0 د.ل";
-            document.getElementById('res-day-usd').innerText = "$" + (days > 0 ? (usd / days) : 0);
+            document.getElementById('res-total').innerText = Math.round(total / 5) * 5 + " د.ل";
         }
-
-        function copyAccName() {
-            var copyText = document.getElementById("acc-name");
-            copyText.select();
-            copyText.setSelectionRange(0, 99999);
-            navigator.clipboard.writeText(copyText.value);
-            alert("تم نسخ الاسم بنجاح: " + copyText.value);
-        }
+        function copyAccName() { navigator.clipboard.writeText("Rudy Alqalaly"); alert("تم نسخ الاسم!"); }
     </script>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, doc, setDoc, onSnapshot, collection, addDoc, serverTimestamp, query, orderBy, updateDoc } 
-            from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyCeRCQr0KSM9uUVVxa-DJbAc4epzRjCNDM",
-            authDomain: "xmedia-db.firebaseapp.com",
-            projectId: "xmedia-db",
-            storageBucket: "xmedia-db.firebasestorage.app",
-            messagingSenderId: "76794291171",
-            appId: "1:76794291171:web:47cdfab692b937c6e176d6"
-        };
+        const firebaseConfig = { apiKey: "AIzaSyCeRCQr0KSM9uUVVxa-DJbAc4epzRjCNDM", authDomain: "xmedia-db.firebaseapp.com", projectId: "xmedia-db", storageBucket: "xmedia-db.firebasestorage.app", messagingSenderId: "76794291171", appId: "1:76794291171:web:47cdfab692b937c6e176d6" };
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        document.getElementById('btn-save-rate').onclick = async () => {
-            var r = parseFloat(document.getElementById('adm-rate').value);
-            if(r > 0) {
-                await setDoc(doc(db, "settings", "config"), { exchangeRate: r, adManagerBalance: window.AD_BAL }, { merge: true });
-                alert("تم الحفظ بنجاح!");
-            }
-        };
-
-        document.getElementById('btn-do-recharge').onclick = async () => {
-            var amt = parseFloat(document.getElementById('adm-recharge').value) || 0;
-            if(amt > 0) {
-                var newB = window.AD_BAL + amt;
-                await setDoc(doc(db, "settings", "config"), { adManagerBalance: newB, exchangeRate: window.EX_RATE }, { merge: true });
-                document.getElementById('adm-recharge').value = '';
-                alert("تم الشحن!");
-            }
-        };
-
         document.getElementById('btn-submit').onclick = async () => {
-            var usd = parseFloat(document.getElementById('pub-usd').value) || 0;
-            var days = parseInt(document.getElementById('pub-days').value) || 0;
-            var link = document.getElementById('pub-link').value.trim();
-
-            if (usd <= 0 || days <= 0 || !Number.isInteger(usd / days)) {
-                alert("يرجى التأكد من البيانات (يجب أن يكون ناتج القسمة صحيحاً)!");
-                return;
-            }
-            if(!link) { alert("رابط المنشور مطلوب!"); return; }
-
-            var total = usd * (window.EX_RATE * 1.20);
-            var roundedTotal = Math.round(total / 5) * 5;
-
-            await addDoc(collection(db, "orders"), { amountUsd: usd, days: days, link: link, totalLyd: roundedTotal, status: 'new', createdAt: serverTimestamp() });
-            
-            var msg = "مرحباً X-Media! أرغب في حجز إعلان بقيمة $" + usd + " لمدة " + days + " أيام. المبلغ المطلوب: " + roundedTotal + " د.ل. الرابط: " + link;
+            const data = {
+                usd: document.getElementById('pub-usd').value,
+                days: document.getElementById('pub-days').value,
+                obj: document.getElementById('pub-obj').value,
+                loc: document.getElementById('pub-loc').value,
+                gender: document.getElementById('pub-gender').value,
+                pay: document.getElementById('pub-payment').value,
+                link: document.getElementById('pub-link').value,
+                createdAt: serverTimestamp()
+            };
+            await addDoc(collection(db, "orders"), data);
+            const msg = `طلب إعلان جديد:\nالميزانية: $${data.usd}\nالمدة: ${data.days} أيام\nالهدف: ${data.obj}\nالمنطقة: ${data.loc}\nالجنس: ${data.gender}\nطريقة الدفع: ${data.pay}\nالرابط: ${data.link}`;
             window.open("https://wa.me/218910756281?text=" + encodeURIComponent(msg), '_blank');
         };
-
-        onSnapshot(doc(db, "settings", "config"), (snap) => {
-            if(snap.exists()) {
-                window.EX_RATE = snap.data().exchangeRate || 7.45;
-                window.AD_BAL = snap.data().adManagerBalance || 0;
-                document.getElementById('adm-rate').value = window.EX_RATE;
-                document.getElementById('bal-admanager').innerText = "$" + window.AD_BAL;
-                calc();
-            }
-        });
-
-        onSnapshot(query(collection(db, "orders"), orderBy("createdAt", "desc")), (snap) => {
-            var list = document.getElementById('orders-list');
-            list.innerHTML = '';
-            snap.forEach(d => {
-                var o = d.data();
-                var tr = document.createElement('tr');
-                tr.innerHTML = `<td>${o.createdAt ? new Date(o.createdAt.toDate()).toLocaleDateString('ar-LY') : 'الآن'}</td><td>$${o.amountUsd}</td><td>${o.days}</td><td>${o.totalLyd} د.ل</td><td><a href="${o.link}" target="_blank">رابط</a></td><td>${o.status === 'active' ? 'نشط' : 'جديد'}</td><td id="act-${d.id}"></td>`;
-                list.appendChild(tr);
-                if(o.status === 'new') {
-                    var btn = document.createElement('button');
-                    btn.innerText = "تفعيل"; btn.className = "btn btn-green"; btn.style.padding = "4px";
-                    btn.onclick = async () => {
-                        await updateDoc(doc(db, "settings", "config"), { adManagerBalance: window.AD_BAL - o.amountUsd });
-                        await updateDoc(doc(db, "orders", d.id), { status: 'active' });
-                        alert("تم التفعيل!");
-                    };
-                    document.getElementById('act-' + d.id).appendChild(btn);
-                }
-            });
-        });
     </script>
 </body>
 </html>
