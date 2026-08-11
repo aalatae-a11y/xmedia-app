@@ -1,110 +1,194 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>X-Media | منظومة الإعلانات والحسابات</title>
+    <style>
+        * { box-sizing: border-box; font-family: system-ui, -apple-system, sans-serif; margin: 0; padding: 0; }
+        body { background-color: #f1f5f9; color: #334155; padding-bottom: 40px; }
+        
+        /* Navbar */
+        .navbar { background-color: #0f172a; color: white; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 20px; font-weight: bold; color: #d97706; }
+        .nav-btn { background: #1e293b; color: white; border: none; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; margin-right: 5px; }
+        .nav-btn.active { background: #d97706; }
 
-    <!-- SECTION 1: PUBLIC CALCULATOR -->
-    <section id="public-section" class="container mx-auto p-4 md:p-8 max-w-2xl">
-        <div class="bg-white rounded-2xl shadow-2xl overflow-hidden border border-gray-200">
-            <div class="bg-navy p-6 text-center text-white relative">
-                <h1 class="text-2xl font-bold text-gold mb-1">X-Media Ads Calculator</h1>
-                <p class="text-xs text-gray-300">احسب تكلفة إعلانك ورعايتك فوراً بالدينار الليبي</p>
+        .container { max-width: 600px; margin: 20px auto; padding: 0 15px; }
+        .admin-container { max-width: 900px; margin: 20px auto; padding: 0 15px; }
+        
+        .card { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); margin-bottom: 20px; border: 1px solid #e2e8f0; }
+        .card-header { background: #0f172a; color: white; padding: 15px; text-align: center; border-radius: 8px 8px 0 0; margin: -20px -20px 20px -20px; }
+        
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; font-weight: bold; margin-bottom: 5px; font-size: 14px; }
+        .form-control { width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 16px; outline: none; }
+        .form-control:focus { border-color: #d97706; }
+
+        .btn { width: 100%; padding: 12px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 14px; }
+        .btn-green { background: #16a34a; color: white; }
+        .btn-dark { background: #334155; color: white; }
+        .btn-navy { background: #0f172a; color: white; }
+        
+        .result-box { background: #f8fafc; border: 2px solid #fde68a; border-radius: 8px; padding: 15px; text-align: center; margin: 15px 0; }
+        .result-price { font-size: 28px; font-weight: bold; color: #0f172a; margin: 5px 0; }
+
+        .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; }
+        .hidden { display: none !important; }
+
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th, td { padding: 10px; text-align: right; border-bottom: 1px solid #e2e8f0; font-size: 14px; }
+        th { background: #f8fafc; color: #64748b; }
+    </style>
+</head>
+<body>
+
+    <div class="navbar">
+        <div class="logo">X-MEDIA</div>
+        <div>
+            <button class="nav-btn active" id="btn-tab-pub" onclick="showTab('pub')">حاسبة الزبون</button>
+            <button class="nav-btn" id="btn-tab-adm" onclick="showTab('adm')">المنظومة الداخلية</button>
+        </div>
+    </div>
+
+    <!-- حاسبة الزبون -->
+    <div id="section-public" class="container">
+        <div class="card">
+            <div class="card-header">
+                <h2 style="color: #d97706;">X-Media Ads Calculator</h2>
+                <p style="font-size: 12px; color: #94a3b8;">احسب تكلفة إعلانك ورعايتك فوراً بالدينار الليبي</p>
             </div>
-            
-            <div class="p-6 space-y-5">
-                <div>
-                    <label class="block text-sm font-bold mb-2">قيمة الإعلان المطلوبة بالدولار ($)</label>
-                    <div class="relative">
-                        <input type="number" id="pub-amount" value="1" min="1" step="1" oninput="runCalculation()" class="w-full border-2 border-gray-300 rounded-xl p-3 text-lg font-bold focus:border-gold outline-none pl-10">
-                        <span class="absolute left-4 top-3.5 text-gray-400 font-bold">$</span>
-                    </div>
-                </div>
 
-                <div>
-                    <label class="block text-sm font-bold mb-2">مدة الإعلان (بالأيام)</label>
-                    <input type="number" id="pub-days" value="1" min="1" step="1" oninput="runCalculation()" class="w-full border-2 border-gray-300 rounded-xl p-3 text-lg font-bold focus:border-gold outline-none">
-                </div>
+            <div class="form-group">
+                <label>قيمة الإعلان المطلوبة بالدولار ($)</label>
+                <input type="number" id="pub-usd" value="1" min="1" class="form-control" oninput="calc()">
+            </div>
 
-                <div>
-                    <label class="block text-sm font-bold mb-2">رابط المنشور / البوست</label>
-                    <input type="url" id="pub-link" placeholder=".../https://facebook.com" class="w-full border-2 border-gray-300 rounded-xl p-3 text-sm focus:border-gold outline-none">
-                </div>
+            <div class="form-group">
+                <label>مدة الإعلان (بالأيام)</label>
+                <input type="number" id="pub-days" value="1" min="1" class="form-control" oninput="calc()">
+            </div>
 
-                <div id="validation-msg" class="hidden text-xs font-bold text-red-600 bg-red-50 p-3 rounded-lg border border-red-200">
-                    * يجب أن يكون تقسيم الميزانية على عدد الأيام عدداً صحيحاً بدون فواصل.
-                </div>
+            <div class="form-group">
+                <label>رابط المنشور / البوست</label>
+                <input type="url" id="pub-link" placeholder="https://facebook.com/..." class="form-control">
+            </div>
 
-                <div class="bg-slate-50 border-2 border-gold/30 rounded-xl p-4 text-center space-y-2">
-                    <span class="text-xs text-gray-500 font-bold block">المبلغ الإجمالي المطلوب تسديده</span>
-                    <div class="text-3xl font-black text-navy" id="pub-total-lyd">0.00 د.ل</div>
-                    <div class="text-xs text-gray-500 flex justify-center gap-4 pt-2 border-t">
-                        <span>اليوم الواحد: <strong id="pub-per-day">0.00 د.ل</strong></span>
-                        <span>اليوم الواحد ($): <strong id="pub-usd-per-day">$1.00</strong></span>
-                    </div>
+            <div class="result-box">
+                <span style="font-size: 12px; color: #64748b; font-weight: bold;">المبلغ الإجمالي المطلوب تسديده</span>
+                <div class="result-price" id="res-total">0.00 د.ل</div>
+                <div style="font-size: 12px; color: #64748b;">
+                    اليوم الواحد: <strong id="res-day-lyd">0.00 د.ل</strong> | اليوم الواحد ($): <strong id="res-day-usd">$1.00</strong>
                 </div>
+            </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-2">
-                    <button type="button" onclick="runCalculation()" class="w-full bg-slate-700 hover:bg-slate-800 text-white font-bold py-3 rounded-xl transition flex items-center justify-center gap-2 text-sm cursor-pointer">
-                        <i class="fas fa-calculator"></i> حساب التكلفة فقط
-                    </button>
-                    <button type="button" id="btn-submit-order" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-xl shadow transition flex items-center justify-center gap-2 text-sm cursor-pointer">
-                        <i class="fab fa-whatsapp text-lg"></i> تأكيد الطلب وحجز الإعلان
-                    </button>
-                </div>
+            <div style="display: flex; gap: 10px;">
+                <button class="btn btn-dark" onclick="calc()">حساب التكلفة فقط</button>
+                <button class="btn btn-green" id="btn-submit">تأكيد الطلب وحجز الإعلان</button>
             </div>
         </div>
-    </section>
+    </div>
 
-    <!-- SECTION 2: INTERNAL DASHBOARD -->
-    <section id="admin-section" class="container mx-auto p-4 md:p-6 hidden">
-        <div id="pin-overlay" class="bg-white rounded-2xl shadow-xl p-8 max-w-md mx-auto text-center border">
-            <i class="fas fa-shield-alt text-4xl text-gold mb-4"></i>
-            <h2 class="text-xl font-bold mb-2">المنظومة الداخلية المحمية</h2>
-            <p class="text-xs text-gray-500 mb-6">أدخل الرمز السري للوصول</p>
-            <input type="password" id="pin-input" maxlength="4" placeholder="••••" class="text-center text-2xl border-2 rounded-xl p-3 w-48 mb-4 focus:border-gold outline-none">
-            <button type="button" onclick="verifyPinCode()" class="w-full bg-navy text-white font-bold py-3 rounded-xl hover:bg-slate-800 transition cursor-pointer">دخول</button>
+    <!-- المنظومة الداخلية -->
+    <div id="section-admin" class="admin-container hidden">
+        
+        <!-- حماية PIN -->
+        <div id="pin-box" class="card" style="max-width: 400px; margin: 40px auto; text-align: center;">
+            <h3>المنظومة الداخلية المحمية</h3>
+            <p style="font-size: 12px; color: #64748b; margin-bottom: 15px;">أدخل الرمز السري للوصول</p>
+            <input type="password" id="pin-input" placeholder="••••" class="form-control" style="text-align: center; margin-bottom: 15px;">
+            <button class="btn btn-navy" onclick="login()">دخول</button>
         </div>
 
-        <div id="admin-content" class="hidden space-y-6">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                
-                <!-- Rate Card -->
-                <div class="bg-white rounded-xl shadow p-5 border-r-4 border-gold">
-                    <h3 class="font-bold text-gray-700 text-sm mb-3"><i class="fas fa-coins text-gold ml-1"></i> سعر شراء الدولار اليوم (USD -> LYD)</h3>
-                    <div class="flex gap-2">
-                        <input type="number" step="0.01" id="admin-rate-input" class="border rounded-lg p-2 font-bold w-full text-lg outline-none focus:border-gold" placeholder="7.45">
-                        <button type="button" id="btn-save-rate" class="bg-navy text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-slate-800 cursor-pointer">حفظ</button>
-                    </div>
-                    <span class="text-[10px] text-gray-400 block mt-2">* سعر الزبون يحسب تلقائياً بزيادة 20% أرباح.</span>
-                </div>
-
-                <!-- Balance Card -->
-                <div class="bg-white rounded-xl shadow p-5 border-r-4 border-blue-600">
-                    <h3 class="font-bold text-gray-700 text-sm mb-2"><i class="fas fa-credit-card text-blue-600 ml-1"></i> أرصدة النوران ومدير الإعلانات</h3>
-                    <div class="grid grid-cols-2 gap-2 text-center mt-3">
-                        <div class="bg-slate-50 p-2 rounded border">
-                            <span class="text-xs text-gray-500 block">بطاقة النوران</span>
-                            <span class="font-black text-sm text-gray-700" id="nuran-bal">$0.00</span>
-                        </div>
-                        <div class="bg-blue-50 p-2 rounded border border-blue-200">
-                            <span class="text-xs text-blue-600 block">مدير الإعلانات</span>
-                            <span class="font-black text-sm text-blue-800" id="ad-manager-bal">$0.00</span>
-                        </div>
+        <!-- المحتوى الداخلي -->
+        <div id="admin-main" class="hidden">
+            <div class="grid-3">
+                <div class="card">
+                    <label>سعر شراء الدولار اليوم (USD -> LYD)</label>
+                    <div style="display: flex; gap: 5px; margin-top: 10px;">
+                        <input type="number" id="adm-rate" step="0.01" class="form-control" placeholder="7.45">
+                        <button class="btn btn-navy" id="btn-save-rate" style="width: 80px;">حفظ</button>
                     </div>
                 </div>
 
-                <!-- Recharge Card -->
-                <div class="bg-white rounded-xl shadow p-5 border-r-4 border-green-600">
-                    <h3 class="font-bold text-gray-700 text-sm mb-2"><i class="fas fa-plus-circle text-green-600 ml-1"></i> شحن سريع للنوران</h3>
-                    <div class="flex gap-2">
-                        <input type="number" id="recharge-amount" placeholder="المبلغ $" class="border rounded-lg p-2 w-full text-sm outline-none">
-                        <button type="button" id="btn-recharge" class="bg-green-600 text-white px-3 py-2 rounded-lg text-sm font-bold hover:bg-green-700 cursor-pointer">شحن وتفريغ</button>
+                <div class="card">
+                    <label>أرصدة النوران ومدير الإعلانات</label>
+                    <div style="display: flex; justify-content: space-between; margin-top: 15px; text-align: center;">
+                        <div><span style="font-size: 11px; color: #64748b;">بطاقة النوران</span><br><strong id="bal-nuran">$0.00</strong></div>
+                        <div><span style="font-size: 11px; color: #2563eb;">مدير الإعلانات</span><br><strong id="bal-admanager" style="color: #2563eb;">$0.00</strong></div>
                     </div>
-                    <span class="text-[10px] text-gray-400 block mt-2">* يتم تحويل الشحن فوراً لـ مدير الإعلانات وتصفير النوران تلقائياً.</span>
+                </div>
+
+                <div class="card">
+                    <label>شحن سريع للنوران</label>
+                    <div style="display: flex; gap: 5px; margin-top: 10px;">
+                        <input type="number" id="adm-recharge" placeholder="المبلغ $" class="form-control">
+                        <button class="btn btn-green" id="btn-do-recharge" style="width: 110px;">شحن وتفريغ</button>
+                    </div>
                 </div>
             </div>
 
-    <!-- UI Utility Script -->
-    <!-- Firebase Direct Modules -->
+            <div class="card">
+                <h3>إدارة الطلبات والإعلانات</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>التاريخ</th>
+                            <th>القيمة ($)</th>
+                            <th>المدة</th>
+                            <th>الإجمالي (د.ل)</th>
+                            <th>الرابط</th>
+                            <th>الحالة</th>
+                            <th>الإجراء</th>
+                        </tr>
+                    </thead>
+                    <tbody id="orders-list">
+                        <tr><td colspan="7" style="text-center; color: #94a3b8;">لا توجد طلبات.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        window.EX_RATE = 7.45;
+        window.AD_BAL = 0;
+
+        function showTab(t) {
+            if(t === 'pub') {
+                document.getElementById('section-public').classList.remove('hidden');
+                document.getElementById('section-admin').classList.add('hidden');
+                document.getElementById('btn-tab-pub').classList.add('active');
+                document.getElementById('btn-tab-adm').classList.remove('active');
+            } else {
+                document.getElementById('section-public').classList.add('hidden');
+                document.getElementById('section-admin').classList.remove('hidden');
+                document.getElementById('btn-tab-adm').classList.add('active');
+                document.getElementById('btn-tab-pub').classList.remove('active');
+            }
+        }
+
+        function login() {
+            if(document.getElementById('pin-input').value === "5412") {
+                document.getElementById('pin-box').classList.add('hidden');
+                document.getElementById('admin-main').classList.remove('hidden');
+            } else { alert("رمز خاطئ!"); }
+        }
+
+        function calc() {
+            var usd = parseFloat(document.getElementById('pub-usd').value) || 0;
+            var days = parseInt(document.getElementById('pub-days').value) || 1;
+            var total = usd * (window.EX_RATE * 1.20);
+            document.getElementById('res-total').innerText = total.toFixed(2) + " د.ل";
+            document.getElementById('res-day-lyd').innerText = (total / days).toFixed(2) + " د.ل";
+            document.getElementById('res-day-usd').innerText = "$" + (usd / days).toFixed(2);
+        }
+    </script>
+
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, onSnapshot, doc, setDoc, updateDoc, serverTimestamp, query, orderBy } 
+        import { getFirestore, doc, setDoc, onSnapshot, collection, addDoc, serverTimestamp, query, orderBy, updateDoc } 
             from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
@@ -119,96 +203,85 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // 1. Direct Listener for "Save Rate" Button
-        document.getElementById('btn-save-rate').addEventListener('click', async () => {
-            var newRate = parseFloat(document.getElementById('admin-rate-input').value);
-            if (!newRate || newRate <= 0) {
-                alert("يرجى إدخال قيمة صحيحة لسعر الدولار!");
-                return;
+        // حفظ السعر
+        document.getElementById('btn-save-rate').onclick = async () => {
+            var r = parseFloat(document.getElementById('adm-rate').value);
+            if(r > 0) {
+                await setDoc(doc(db, "settings", "config"), { exchangeRate: r, adManagerBalance: window.AD_BAL }, { merge: true });
+                alert("تم الحفظ بنجاح!");
             }
-            try {
-                await setDoc(doc(db, "settings", "config"), { 
-                    exchangeRate: newRate, 
-                    adManagerBalance: window.AD_MANAGER_BAL 
-                }, { merge: true });
-                alert("تم حفظ سعر الصرف الجديد (" + newRate + ") وتحديث الحاسبة بنجاح!");
-            } catch(e) {
-                console.error(e);
-                alert("خطأ أثناء الاتصال بقاعدة البيانات: " + e.message);
-            }
-        });
+        };
 
-        // 2. Direct Listener for "Recharge" Button
-        document.getElementById('btn-recharge').addEventListener('click', async () => {
-            var amt = parseFloat(document.getElementById('recharge-amount').value) || 0;
-            if (amt <= 0) {
-                alert("يرجى كتابة قيمة الشحن بالدولار أولاً!");
-                return;
+        // الشحن
+        document.getElementById('btn-do-recharge').onclick = async () => {
+            var amt = parseFloat(document.getElementById('adm-recharge').value) || 0;
+            if(amt > 0) {
+                var newB = window.AD_BAL + amt;
+                await setDoc(doc(db, "settings", "config"), { adManagerBalance: newB, exchangeRate: window.EX_RATE }, { merge: true });
+                document.getElementById('adm-recharge').value = '';
+                alert("تم الشحن والتفريغ بنجاح!");
             }
-            try {
-                var newBal = window.AD_MANAGER_BAL + amt;
-                await setDoc(doc(db, "settings", "config"), { 
-                    adManagerBalance: newBal, 
-                    exchangeRate: window.EXCHANGE_RATE 
-                }, { merge: true });
-                document.getElementById('recharge-amount').value = '';
-                alert("تم شحن $" + amt + " لمدير الإعلانات وتفريغ بطاقة النوران بنجاح!");
-            } catch(e) {
-                console.error(e);
-                alert("خطأ أثناء الشحن: " + e.message);
-            }
-        });
+        };
 
-        // 3. Direct Listener for Order Submission
-        document.getElementById('btn-submit-order').addEventListener('click', async () => {
-            var usd = parseFloat(document.getElementById('pub-amount').value) || 0;
+        // حجز الإعلان
+        document.getElementById('btn-submit').onclick = async () => {
+            var usd = parseFloat(document.getElementById('pub-usd').value) || 0;
             var days = parseInt(document.getElementById('pub-days').value) || 0;
             var link = document.getElementById('pub-link').value.trim();
-            var customerRate = window.EXCHANGE_RATE * 1.20;
-            var totalLyd = usd * customerRate;
+            if(usd <= 0 || days <= 0 || !link) { alert("يرجى تعبئة جميع البيانات ورابط المنشور!"); return; }
 
-            if (usd <= 0 || days <= 0) {
-                alert("يرجى إدخال قيمة الإعلان ومدته بشكل صحيح!");
-                return;
-            }
+            var totalLyd = usd * (window.EX_RATE * 1.20);
+            await addDoc(collection(db, "orders"), { amountUsd: usd, days: days, link: link, totalLyd: totalLyd, status: 'new', createdAt: serverTimestamp() });
+            
+            var msg = "مرحباً X-Media! أرغب في حجز إعلان بقيمة $" + usd + " لمدة " + days + " أيام. الرابط: " + link;
+            window.open("https://wa.me/218910756281?text=" + encodeURIComponent(msg), '_blank');
+        };
 
-            if (!link) {
-                alert("يرجى وضع رابط المنشور / البوست لإكمال الطلب!");
-                return;
-            }
-
-            try {
-                await addDoc(collection(db, "orders"), {
-                    amountUsd: usd,
-                    days: days,
-                    link: link,
-                    totalLyd: totalLyd,
-                    status: 'new',
-                    createdAt: serverTimestamp()
-                });
-                
-                var usdPerDay = usd / days;
-                var phone = "218910756281";
-                var msg = "مرحباً X-Media! أرغب في حجز إعلان بالتفاصيل التالية:\n- القيمة: $" + usd + "\n- المدة: " + days + " أيام ($" + usdPerDay + "/يوم)\n- المبلغ الإجمالي: " + totalLyd.toFixed(2) + " د.ل\n- الرابط: " + link;
-                
-                window.open("https://wa.me/" + phone + "?text=" + encodeURIComponent(msg), '_blank');
-            } catch (e) {
-                console.error(e);
-                alert("حدث خطأ أثناء حفظ الطلب: " + e.message);
+        // المزامنة المباشرة
+        onSnapshot(doc(db, "settings", "config"), (snap) => {
+            if(snap.exists()) {
+                window.EX_RATE = snap.data().exchangeRate || 7.45;
+                window.AD_BAL = snap.data().adManagerBalance || 0;
+                document.getElementById('adm-rate').value = window.EX_RATE;
+                document.getElementById('bal-admanager').innerText = "$" + window.AD_BAL.toFixed(2);
+                calc();
             }
         });
 
-        // Realtime Listener for Settings
-        onSnapshot(doc(db, "settings", "config"), (docSnap) => {
-            if (docSnap.exists()) {
-                const data = docSnap.data();
-                window.EXCHANGE_RATE = data.exchangeRate || 7.45;
-                window.AD_MANAGER_BAL = data.adManagerBalance || 0;
-                
-                document.getElementById('admin-rate-input').value = window.EXCHANGE_RATE;
-                document.getElementById('ad-manager-bal').innerText = "$" + window.AD_MANAGER_BAL.toFixed(2);
-                window.runCalculation();
-            }
-        });
+        // جدول الطلبات
+        onSnapshot(query(collection(db, "orders"), orderBy("createdAt", "desc")), (snap) => {
+            var list = document.getElementById('orders-list');
+            if(snap.empty) { list.innerHTML = '<tr><td colspan="7" style="text-align:center; color:#94a3b8;">لا توجد طلبات.</td></tr>'; return; }
+            list.innerHTML = '';
+            snap.forEach(d => {
+                var o = d.data();
+                var tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${o.createdAt ? new Date(o.createdAt.toDate()).toLocaleDateString('ar-LY') : 'الآن'}</td>
+                    <td><b>$${o.amountUsd}</b></td>
+                    <td>${o.days} أيام</td>
+                    <td><b>${o.totalLyd ? o.totalLyd.toFixed(2) : 0} د.ل</b></td>
+                    <td><a href="${o.link}" target="_blank">رابط</a></td>
+                    <td>${o.status === 'active' ? '<span style="color:green;">نشط</span>' : '<span style="color:orange;">جديد</span>'}</td>
+                    <td id="act-${d.id}"></td>
+                `;
+                list.appendChild(tr);
 
-        // Realtime Listener for Orders Table
+                if(o.status === 'new') {
+                    var btn = document.createElement('button');
+                    btn.innerText = "تفعيل";
+                    btn.className = "btn btn-green";
+                    btn.style.padding = "4px 8px";
+                    btn.onclick = async () => {
+                        if(window.AD_BAL < o.amountUsd) { alert("الرصيد غير كافٍ!"); return; }
+                        await updateDoc(doc(db, "settings", "config"), { adManagerBalance: window.AD_BAL - o.amountUsd });
+                        await updateDoc(doc(db, "orders", d.id), { status: 'active' });
+                        alert("تم التفعيل وخصم المبلغ!");
+                    };
+                    document.getElementById('act-' + d.id).appendChild(btn);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
