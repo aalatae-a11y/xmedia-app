@@ -97,11 +97,11 @@
             <!-- صندوق إضافة الأدمن المساعد للزبون -->
             <div class="access-box">
                 <div class="access-header">
-                    <span>🔑 خطوة هامة: إضافة حسابنا كمدير في صفحك</span>
+                    <span>🔑 خطوة هامة: إضافة حسابنا كمدير في صفحتك</span>
                 </div>
                 <p style="font-size: 11px; color: #475569; margin-bottom: 8px;">1. انسخ اسم حسابنا الإعلاني الآتي:</p>
                 <div class="copy-input-group">
-                    <input type="text" id="acc-name" value="رودي القلالي" readonly class="form-control" style="font-weight: bold; background: #fff; font-size: 13px;">
+                    <input type="text" id="acc-name" value="Rudy Alqalaly" readonly class="form-control" style="font-weight: bold; background: #fff; font-size: 13px;">
                     <button class="btn-copy" onclick="copyAccName()">نسخ الاسم</button>
                 </div>
                 <p style="font-size: 11px; color: #475569; margin-bottom: 8px;">2. اضغط الزر أدناه للانتقال لإعدادات فيسبوك وإضافتنا كمدير/محرر:</p>
@@ -213,7 +213,6 @@
             document.getElementById('res-day-usd').innerText = "$" + (days > 0 ? (usd / days) : 0);
         }
 
-        // دالة نسخ الاسم
         function copyAccName() {
             var copyText = document.getElementById("acc-name");
             copyText.select();
