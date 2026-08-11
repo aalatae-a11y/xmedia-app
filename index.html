@@ -2,236 +2,20 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>X-Media | منظومة الإعلانات والحسابات</title>
+    <title>X-Media</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <style>
-        .bg-navy { background-color: #0F172A; }
-        .text-gold { color: #D97706; }
-        .border-gold { border-color: #D97706; }
-        .bg-gold { background-color: #D97706; }
-    </style>
 </head>
-<body class="bg-gray-100 font-sans min-h-screen text-gray-800">
+<body class="bg-gray-100 p-4">
+    <div class="max-w-md mx-auto bg-white p-6 rounded-xl shadow-lg">
+        <h1 class="text-xl font-bold mb-4">إعدادات المنظومة</h1>
+        <input type="number" id="rate-input" class="w-full border p-2 mb-2" placeholder="سعر الدولار">
+        <button onclick="saveRate()" class="w-full bg-blue-600 text-white p-2 rounded">حفظ السعر</button>
+        <div id="status" class="mt-4 text-sm font-bold"></div>
+    </div>
 
-    <!-- Navbar Navigation -->
-    <nav class="bg-navy text-white shadow-xl p-4 sticky top-0 z-50">
-        <div class="container mx-auto flex justify-between items-center">
-            <div class="flex items-center space-x-3 space-x-reverse">
-                <span class="text-2xl font-black tracking-wider text-gold">X-MEDIA</span>
-                <span class="text-xs bg-slate-800 text-gray-300 px-2 py-1 rounded border border-slate-700">النسخة السحابية</span>
-            </div>
-            <div class="flex gap-2">
-                <button id="nav-public" onclick="switchTab('public')" class="px-4 py-2 rounded-lg text-sm font-bold bg-gold text-white transition cursor-pointer">
-                    <i class="fas fa-calculator ml-1"></i> حاسبة الزبون
-                </button>
-                <button id="nav-admin" onclick="switchTab('admin')" class="px-4 py-2 rounded-lg text-sm font-bold bg-slate-800 text-gray-300 hover:text-white transition cursor-pointer">
-                    <i class="fas fa-user-lock ml-1"></i> المنظومة الداخلية
-                </button>
-            </div>
-        </div>
-    </nav>
-
-    <!-- SECTION 1: PUBLIC CALCULATOR -->
-    <section id="public-section" class="container mx-auto p-4 md:p-8 max-w-2xl">
-        <div class="bg-white rounded-2xl shadow-2xl overflow-hidden border border-gray-200">
-            <div class="bg-navy p-6 text-center text-white relative">
-                <h1 class="text-2xl font-bold text-gold mb-1">X-Media Ads Calculator</h1>
-                <p class="text-xs text-gray-300">احسب تكلفة إعلانك ورعايتك فوراً بالدينار الليبي</p>
-            </div>
-            
-            <div class="p-6 space-y-5">
-                <div>
-                    <label class="block text-sm font-bold mb-2">قيمة الإعلان المطلوبة بالدولار ($)</label>
-                    <div class="relative">
-                        <input type="number" id="pub-amount" value="10" min="1" step="1" oninput="runCalculation()" class="w-full border-2 border-gray-300 rounded-xl p-3 text-lg font-bold focus:border-gold outline-none pl-10">
-                        <span class="absolute left-4 top-3.5 text-gray-400 font-bold">$</span>
-                    </div>
-                </div>
-
-                <div>
-                    <label class="block text-sm font-bold mb-2">مدة الإعلان (بالأيام)</label>
-                    <input type="number" id="pub-days" value="2" min="1" step="1" oninput="runCalculation()" class="w-full border-2 border-gray-300 rounded-xl p-3 text-lg font-bold focus:border-gold outline-none">
-                </div>
-
-                <div>
-                    <label class="block text-sm font-bold mb-2">رابط المنشور / البوست</label>
-                    <input type="url" id="pub-link" placeholder="https://facebook.com/..." class="w-full border-2 border-gray-300 rounded-xl p-3 text-sm focus:border-gold outline-none">
-                </div>
-
-                <!-- Error Notice -->
-                <div id="validation-msg" class="hidden text-xs font-bold text-red-600 bg-red-50 p-3 rounded-lg border border-red-200">
-                    * يجب أن يكون تقسيم الميزانية على عدد الأيام عدداً صحيحاً بدون فواصل (مثلاً: $10 على يومين = $5 في اليوم).
-                </div>
-
-                <!-- Live Results Box -->
-                <div class="bg-slate-50 border-2 border-gold/30 rounded-xl p-4 text-center space-y-2">
-                    <span class="text-xs text-gray-500 font-bold block">المبلغ الإجمالي المطلوب تسديده</span>
-                    <div class="text-3xl font-black text-navy" id="pub-total-lyd">0.00 د.ل</div>
-                    <div class="text-xs text-gray-500 flex justify-center gap-4 pt-2 border-t">
-                        <span>اليوم الواحد: <strong id="pub-per-day">0 د.ل</strong></span>
-                        <span>اليوم الواحد ($): <strong id="pub-usd-per-day">$0</strong></span>
-                    </div>
-                </div>
-
-                <!-- Actions Buttons -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-2">
-                    <button type="button" onclick="runCalculation()" class="w-full bg-slate-700 hover:bg-slate-800 text-white font-bold py-3 rounded-xl transition flex items-center justify-center gap-2 text-sm cursor-pointer">
-                        <i class="fas fa-calculator"></i> حساب التكلفة فقط
-                    </button>
-                    <button type="button" onclick="handleOrderSubmit()" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-xl shadow transition flex items-center justify-center gap-2 text-sm cursor-pointer">
-                        <i class="fab fa-whatsapp text-lg"></i> تأكيد الطلب وحجز الإعلان
-                    </button>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- SECTION 2: INTERNAL DASHBOARD -->
-    <section id="admin-section" class="container mx-auto p-4 md:p-6 hidden">
-        
-        <!-- PIN Overlay -->
-        <div id="pin-overlay" class="bg-white rounded-2xl shadow-xl p-8 max-w-md mx-auto text-center border">
-            <i class="fas fa-shield-alt text-4xl text-gold mb-4"></i>
-            <h2 class="text-xl font-bold mb-2">المنظومة الداخلية المحمية</h2>
-            <p class="text-xs text-gray-500 mb-6">أدخل الرمز السري للوصول</p>
-            <input type="password" id="pin-input" maxlength="4" placeholder="••••" class="text-center text-2xl border-2 rounded-xl p-3 w-48 mb-4 focus:border-gold outline-none">
-            <button type="button" onclick="verifyPinCode()" class="w-full bg-navy text-white font-bold py-3 rounded-xl hover:bg-slate-800 transition cursor-pointer">دخول</button>
-        </div>
-
-        <!-- Main Admin Dashboard -->
-        <div id="admin-content" class="hidden space-y-6">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                
-                <!-- Exchange Rate -->
-                <div class="bg-white rounded-xl shadow p-5 border-r-4 border-gold">
-                    <h3 class="font-bold text-gray-700 text-sm mb-3"><i class="fas fa-coins text-gold ml-1"></i> سعر شراء الدولار اليوم (USD -> LYD)</h3>
-                    <div class="flex gap-2">
-                        <input type="number" step="0.01" id="admin-rate-input" class="border rounded-lg p-2 font-bold w-full text-lg outline-none focus:border-gold" placeholder="7.45">
-                        <button type="button" onclick="handleUpdateRate()" class="bg-navy text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-slate-800 cursor-pointer">حفظ</button>
-                    </div>
-                    <span class="text-[10px] text-gray-400 block mt-2">* سعر الزبون يحسب تلقائياً بزيادة 20% أرباح.</span>
-                </div>
-
-                <!-- Balances -->
-                <div class="bg-white rounded-xl shadow p-5 border-r-4 border-blue-600">
-                    <h3 class="font-bold text-gray-700 text-sm mb-2"><i class="fas fa-credit-card text-blue-600 ml-1"></i> أرصدة النوران ومدير الإعلانات</h3>
-                    <div class="grid grid-cols-2 gap-2 text-center mt-3">
-                        <div class="bg-slate-50 p-2 rounded border">
-                            <span class="text-xs text-gray-500 block">بطاقة النوران</span>
-                            <span class="font-black text-sm text-gray-700" id="nuran-bal">$0.00</span>
-                        </div>
-                        <div class="bg-blue-50 p-2 rounded border border-blue-200">
-                            <span class="text-xs text-blue-600 block">مدير الإعلانات</span>
-                            <span class="font-black text-sm text-blue-800" id="ad-manager-bal">$0.00</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Recharge -->
-                <div class="bg-white rounded-xl shadow p-5 border-r-4 border-green-600">
-                    <h3 class="font-bold text-gray-700 text-sm mb-2"><i class="fas fa-plus-circle text-green-600 ml-1"></i> شحن سريع للنوران</h3>
-                    <div class="flex gap-2">
-                        <input type="number" id="recharge-amount" placeholder="المبلغ $" class="border rounded-lg p-2 w-full text-sm outline-none">
-                        <button type="button" onclick="handleRecharge()" class="bg-green-600 text-white px-3 py-2 rounded-lg text-sm font-bold hover:bg-green-700 cursor-pointer">شحن وتفريغ</button>
-                    </div>
-                    <span class="text-[10px] text-gray-400 block mt-2">* يتم تحويل الشحن فوراً لـ مدير الإعلانات وتصفير النوران تلقائياً.</span>
-                </div>
-
-            </div>
-
-            <!-- Orders Table -->
-            <div class="bg-white rounded-xl shadow overflow-hidden">
-                <div class="bg-navy text-white p-4 font-bold flex justify-between items-center">
-                    <span><i class="fas fa-tasks text-gold ml-2"></i> إدارة الطلبات والإعلانات</span>
-                    <span class="text-xs bg-slate-800 px-3 py-1 rounded-full text-gold" id="orders-count">0 طلبات</span>
-                </div>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-right text-sm">
-                        <thead class="bg-slate-50 border-b text-gray-600">
-                            <tr>
-                                <th class="p-3">تاريخ الطلب</th>
-                                <th class="p-3">القيمة ($)</th>
-                                <th class="p-3">المدة</th>
-                                <th class="p-3">الإجمالي (د.ل)</th>
-                                <th class="p-3">الرابط</th>
-                                <th class="p-3">الحالة</th>
-                                <th class="p-3 text-center">الإجراء</th>
-                            </tr>
-                        </thead>
-                        <tbody id="admin-orders-table" class="divide-y text-gray-700">
-                            <tr>
-                                <td colspan="7" class="text-center p-4 text-gray-400">لا توجد طلبات جارية.</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-        </div>
-    </section>
-
-    <!-- Global State Variables & Local Handlers -->
-    <script>
-        window.EXCHANGE_RATE = 7.45;
-        window.AD_MANAGER_BAL = 0;
-
-        function switchTab(tab) {
-            if (tab === 'public') {
-                document.getElementById('public-section').classList.remove('hidden');
-                document.getElementById('admin-section').classList.add('hidden');
-                document.getElementById('nav-public').className = 'px-4 py-2 rounded-lg text-sm font-bold bg-gold text-white transition cursor-pointer';
-                document.getElementById('nav-admin').className = 'px-4 py-2 rounded-lg text-sm font-bold bg-slate-800 text-gray-300 hover:text-white transition cursor-pointer';
-            } else {
-                document.getElementById('public-section').classList.add('hidden');
-                document.getElementById('admin-section').classList.remove('hidden');
-                document.getElementById('nav-admin').className = 'px-4 py-2 rounded-lg text-sm font-bold bg-gold text-white transition cursor-pointer';
-                document.getElementById('nav-public').className = 'px-4 py-2 rounded-lg text-sm font-bold bg-slate-800 text-gray-300 hover:text-white transition cursor-pointer';
-            }
-        }
-
-        function verifyPinCode() {
-            var inputPin = document.getElementById('pin-input').value;
-            if (inputPin === "5412") {
-                document.getElementById('pin-overlay').classList.add('hidden');
-                document.getElementById('admin-content').classList.remove('hidden');
-            } else {
-                alert('الرمز السري غير صحيح!');
-            }
-        }
-
-        function runCalculation() {
-            var usd = parseFloat(document.getElementById('pub-amount').value) || 0;
-            var days = parseInt(document.getElementById('pub-days').value) || 1;
-            var valMsg = document.getElementById('validation-msg');
-
-            var customerRate = window.EXCHANGE_RATE * 1.20;
-            var totalLyd = usd * customerRate;
-            var perDayLyd = totalLyd / days;
-            var usdPerDay = usd / days;
-
-            if (usd > 0 && days > 0 && (usd % days !== 0)) {
-                valMsg.classList.remove('hidden');
-            } else {
-                valMsg.classList.add('hidden');
-            }
-
-            document.getElementById('pub-total-lyd').innerText = totalLyd.toFixed(2) + " د.ل";
-            document.getElementById('pub-per-day').innerText = perDayLyd.toFixed(2) + " د.ل";
-            document.getElementById('pub-usd-per-day').innerText = "$" + usdPerDay.toFixed(2);
-        }
-
-        window.onload = function() {
-            runCalculation();
-        };
-    </script>
-
-    <!-- Firebase System Logic -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, onSnapshot, doc, setDoc, updateDoc, serverTimestamp, query, orderBy } 
-            from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCeRCQr0KSM9uUVVxa-DJbAc4epzRjCNDM",
@@ -245,123 +29,16 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // Bind Firebase Actions to Window
-        window.handleUpdateRate = async function() {
-            var newRate = parseFloat(document.getElementById('admin-rate-input').value);
-            if (newRate > 0) {
-                try {
-                    await setDoc(doc(db, "settings", "config"), { exchangeRate: newRate, adManagerBalance: window.AD_MANAGER_BAL }, { merge: true });
-                    alert("تم تحديث سعر الصرف اليومي بنجاح!");
-                } catch(e) {
-                    alert("حدث خطأ أثناء الاتصال بقاعدة البيانات!");
-                }
-            } else {
-                alert("يرجى إدخال سعر صرف صحيح!");
-            }
-        };
-
-        window.handleRecharge = async function() {
-            var amt = parseFloat(document.getElementById('recharge-amount').value) || 0;
-            if (amt > 0) {
-                try {
-                    var newBal = window.AD_MANAGER_BAL + amt;
-                    await setDoc(doc(db, "settings", "config"), { adManagerBalance: newBal, exchangeRate: window.EXCHANGE_RATE }, { merge: true });
-                    document.getElementById('recharge-amount').value = '';
-                    alert("تم شحن $" + amt + " وتفريغها أوتوماتيكياً لمدير الإعلانات!");
-                } catch(e) {
-                    alert("حدث خطأ أثناء الشحن!");
-                }
-            } else {
-                alert("يرجى إدخال مبلغ شحن أكبر من 0!");
-            }
-        };
-
-        window.handleOrderSubmit = async function() {
-            var usd = parseFloat(document.getElementById('pub-amount').value) || 0;
-            var days = parseInt(document.getElementById('pub-days').value) || 0;
-            var link = document.getElementById('pub-link').value.trim();
-            var customerRate = window.EXCHANGE_RATE * 1.20;
-            var totalLyd = usd * customerRate;
-
-            if (usd <= 0 || days <= 0) {
-                alert("يرجى إدخال قيمة الإعلان ومدته بشكل صحيح!");
-                return;
-            }
-
-            if (!link) {
-                alert("يرجى وضع رابط المنشور / البوست لإكمال الطلب وحجز الإعلان!");
-                return;
-            }
-
-            if (usd % days !== 0) {
-                alert("عذراً، يجب أن يكون تقسيم الدولارات على الأيام عدداً صحيحاً بدون فواصل (مثلاً: 10$ على يومين)!");
-                return;
-            }
-
+        window.saveRate = async () => {
+            const val = parseFloat(document.getElementById('rate-input').value);
             try {
-                await addDoc(collection(db, "orders"), {
-                    amountUsd: usd,
-                    days: days,
-                    link: link,
-                    totalLyd: totalLyd,
-                    status: 'new',
-                    createdAt: serverTimestamp()
-                });
-                
-                var usdPerDay = usd / days;
-                var msg = "مرحباً X-Media! أرغب في حجز إعلان بالتفاصيل التالية:\n- القيمة: $" + usd + "\n- المدة: " + days + " أيام ($" + usdPerDay + "/يوم)\n- المبلغ الإجمالي: " + totalLyd.toFixed(2) + " د.ل\n- الرابط: " + link;
-                
-                window.open("https://wa.me/?text=" + encodeURIComponent(msg), '_blank');
+                await setDoc(doc(db, "settings", "config"), { exchangeRate: val }, { merge: true });
+                document.getElementById('status').innerText = "تم الحفظ بنجاح!";
+                document.getElementById('status').className = "mt-4 text-green-600";
             } catch (e) {
-                alert("حدث خطأ أثناء حفظ الطلب!");
+                document.getElementById('status').innerText = "خطأ: " + e.message;
             }
         };
-
-        // Realtime Config Sync
-        onSnapshot(doc(db, "settings", "config"), (docSnap) => {
-            if (docSnap.exists()) {
-                const data = docSnap.data();
-                window.EXCHANGE_RATE = data.exchangeRate || 7.45;
-                window.AD_MANAGER_BAL = data.adManagerBalance || 0;
-                
-                document.getElementById('admin-rate-input').value = window.EXCHANGE_RATE;
-                document.getElementById('ad-manager-bal').innerText = "$" + window.AD_MANAGER_BAL.toFixed(2);
-                window.runCalculation();
-            } else {
-                setDoc(doc(db, "settings", "config"), { exchangeRate: 7.45, adManagerBalance: 0 });
-            }
-        });
-
-        // Realtime Orders Table
-        const q = query(collection(db, "orders"), orderBy("createdAt", "desc"));
-        onSnapshot(q, (snapshot) => {
-            const table = document.getElementById("admin-orders-table");
-            document.getElementById("orders-count").innerText = snapshot.size + " طلبات";
-            
-            if (snapshot.empty) {
-                table.innerHTML = '<tr><td colspan="7" class="text-center p-4 text-gray-400">لا توجد طلبات جارية.</td></tr>';
-                return;
-            }
-
-            table.innerHTML = "";
-            snapshot.forEach((docSnap) => {
-                const data = docSnap.data();
-                const id = docSnap.id;
-                const tr = document.createElement("tr");
-                tr.className = "hover:bg-gray-50";
-
-                const dateStr = data.createdAt ? new Date(data.createdAt.toDate()).toLocaleDateString("ar-LY") : 'الآن';
-                const statusBadge = data.status === 'active' 
-                    ? '<span class="bg-green-100 text-green-800 px-2 py-1 rounded text-xs font-bold">نشط</span>'
-                    : '<span class="bg-yellow-100 text-yellow-800 px-2 py-1 rounded text-xs font-bold">جديد</span>';
-
-                const linkHtml = data.link 
-                    ? '<a href="' + data.link + '" target="_blank" class="text-blue-600 hover:underline"><i class="fas fa-external-link-alt"></i> رابط</a>' 
-                    : '-';
-
-                tr.innerHTML = `
-                    <td class="p-3 text-xs">${dateStr}</td>
-                    <td class="p-3 font-bold text-navy">$${data.amountUsd}</td>
-                    <td class="p-3">${data.days} أيام</td>
-                    <td class="p-3 font-bold text-gold">${data.totalLyd.toFixed(2)} د.ل</td>
-                    <td class="p-3">${lin
+    </script>
+</body>
+</html>
