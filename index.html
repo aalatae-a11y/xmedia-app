@@ -1,87 +1,176 @@
+أنا
 
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منظومة إدارة الأرشيف - Xmedia</title>
+    <title>X-Media | منظومة الإعلانات والحسابات</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .bg-navy { background-color: #0F172A; }
+        .text-gold { color: #D97706; }
+        .border-gold { border-color: #D97706; }
+        .bg-gold { background-color: #D97706; }
+    </style>
 </head>
-<body class="bg-gray-100 font-sans min-h-screen">
+<body class="bg-gray-100 font-sans min-h-screen text-gray-800">
 
-    <!-- Header -->
-    <header class="bg-blue-800 text-white p-4 shadow-lg">
+    <!-- Navbar Navigation -->
+    <nav class="bg-navy text-white shadow-xl p-4 sticky top-0 z-50">
         <div class="container mx-auto flex justify-between items-center">
-            <h1 class="text-2xl font-bold flex items-center gap-2">
-                <i class="fas fa-folder-open"></i> منظومة إدارة الأرشيف والبيانات
-            </h1>
-            <span class="bg-blue-900 text-xs px-3 py-1 rounded-full text-blue-200">Xmedia App</span>
-        </div>
-    </header>
-
-    <!-- Main Content -->
-    <main class="container mx-auto p-4 md:p-6">
-        
-        <!-- Form Section -->
-        <div class="bg-white rounded-lg shadow-md p-6 mb-8">
-            <h2 class="text-xl font-semibold mb-4 text-gray-700 flex items-center gap-2">
-                <i class="fas fa-plus-circle text-blue-600"></i> إضافة سجل جديد
-            </h2>
-            <form id="archiveForm" class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div>
-                    <label class="block text-sm font-medium text-gray-600 mb-1">اسم الملف / السجل</label>
-                    <input type="text" id="title" required class="w-full border rounded-lg p-2 focus:ring-2 focus:ring-blue-500 outline-none" placeholder="أدخل العنوان...">
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-600 mb-1">التصنيف</label>
-                    <input type="text" id="category" required class="w-full border rounded-lg p-2 focus:ring-2 focus:ring-blue-500 outline-none" placeholder="مثال: وثائق، تقارير...">
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-600 mb-1">الملاحظات</label>
-                    <input type="text" id="notes" class="w-full border rounded-lg p-2 focus:ring-2 focus:ring-blue-500 outline-none" placeholder="ملاحظات إضافية...">
-                </div>
-                <div class="md:col-span-3 flex justify-end">
-                    <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg transition font-medium flex items-center gap-2">
-                        <i class="fas fa-save"></i> حفظ البيانات
-                    </button>
-                </div>
-            </form>
-        </div>
-
-        <!-- Table Section -->
-        <div class="bg-white rounded-lg shadow-md p-6">
-            <h2 class="text-xl font-semibold mb-4 text-gray-700 flex items-center gap-2">
-                <i class="fas fa-list text-blue-600"></i> السجلات المحفوظة
-            </h2>
-            <div class="overflow-x-auto">
-                <table class="w-full text-right border-collapse">
-                    <thead>
-                        <tr class="bg-gray-50 border-b text-gray-600 text-sm">
-                            <th class="p-3">العنوان</th>
-                            <th class="p-3">التصنيف</th>
-                            <th class="p-3">الملاحظات</th>
-                            <th class="p-3">التاريخ</th>
-                        </tr>
-                    </thead>
-                    <tbody id="dataTable" class="divide-y text-gray-700 text-sm">
-                        <tr>
-                            <td colspan="4" class="text-center p-4 text-gray-400">جاري تحميل البيانات...</td>
-                        </tr>
-                    </tbody>
-                </table>
+            <div class="flex items-center space-x-3 space-x-reverse">
+                <span class="text-2xl font-black tracking-wider text-gold">X-MEDIA</span>
+                <span class="text-xs bg-slate-800 text-gray-300 px-2 py-1 rounded border border-slate-700">النسخة السحابية</span>
+            </div>
+            <div class="flex gap-2">
+                <button onclick="switchTab('public')" id="tab-public" class="px-4 py-2 rounded-lg text-sm font-bold bg-gold text-white transition">
+                    <i class="fas fa-calculator ml-1"></i> حاسبة الزبون
+                </button>
+                <button onclick="switchTab('admin')" id="tab-admin" class="px-4 py-2 rounded-lg text-sm font-bold bg-slate-800 text-gray-300 hover:text-white transition">
+                    <i class="fas fa-user-lock ml-1"></i> المنظومة الداخلية
+                </button>
             </div>
         </div>
+    </nav>
 
-    </main>
+    <!-- SECTION 1: PUBLIC CALCULATOR (المواجهة الخارجية) -->
+    <section id="public-section" class="container mx-auto p-4 md:p-8 max-w-2xl">
+        <div class="bg-white rounded-2xl shadow-2xl overflow-hidden border border-gray-200">
+            <div class="bg-navy p-6 text-center text-white relative">
+                <h1 class="text-2xl font-bold text-gold mb-1">X-Media Ads Calculator</h1>
+                <p class="text-xs text-gray-300">احسب تكلفة إعلانك ورعايتك فوراً بالدينار الليبي</p>
+            </div>
+            
+            <div class="p-6 space-y-6">
+                <div>
+                    <label class="block text-sm font-bold mb-2">قيمة الإعلان المطلوبة بالدولار ($)</label>
+                    <div class="relative">
+                        <input type="number" id="pub-amount" value="10" min="1" oninput="calculatePublic()" class="w-full border-2 border-gray-300 rounded-xl p-3 text-lg font-bold focus:border-gold outline-none pl-10">
+                        <span class="absolute left-4 top-3.5 text-gray-400 font-bold">$</span>
+                    </div>
+                </div>
 
-    <!-- Firebase Integration Script -->
+                <div>
+                    <label class="block text-sm font-bold mb-2">مدة الإعلان (بالأيام)</label>
+                    <input type="number" id="pub-days" value="3" min="1" oninput="calculatePublic()" class="w-full border-2 border-gray-300 rounded-xl p-3 text-lg font-bold focus:border-gold outline-none">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-bold mb-2">رابط المنشور / البوست (اختياري)</label>
+                    <input type="url" id="pub-link" placeholder="https://facebook.com/..." class="w-full border-2 border-gray-300 rounded-xl p-3 text-sm focus:border-gold outline-none">
+                </div>
+
+                <!-- Live Results Box -->
+                <div class="bg-slate-50 border-2 border-gold/30 rounded-xl p-4 text-center space-y-2">
+                    <span class="text-xs text-gray-500 font-bold block">المبلغ الإجمالي المطلوب تسديده</span>
+                    <div class="text-3xl font-black text-navy" id="pub-total-lyd">0.00 د.ل</div>
+                    <div class="text-xs text-gray-500 flex justify-center gap-4 pt-2 border-t">
+                        <span>اليوم الواحد: <strong id="pub-per-day">0 د.ل</strong></span>
+                        <span>سعر الصرف المعتمد: <strong id="pub-rate-display">0.00</strong></span>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <button onclick="submitOrder()" class="w-full bg-gold hover:bg-amber-600 text-white font-bold py-4 rounded-xl shadow-lg transition flex items-center justify-center gap-2 text-lg">
+                    <i class="fab fa-whatsapp text-2xl"></i> إرسال الطلب وحجز الإعلان
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 2: INTERNAL DASHBOARD (المنظومة الداخلية) -->
+    <section id="admin-section" class="container mx-auto p-4 md:p-6 hidden">
+        
+        <!-- PIN Verification Overlay -->
+        <div id="pin-overlay" class="bg-white rounded-2xl shadow-xl p-8 max-w-md mx-auto text-center border">
+            <i class="fas fa-shield-alt text-4xl text-gold mb-4"></i>
+            <h2 class="text-xl font-bold mb-2">المنظومة الداخلية المحمية</h2>
+            <p class="text-xs text-gray-500 mb-6">أدخل الرمز السري للوصول للوحة التحكم (الافتراضي: 1234)</p>
+            <input type="password" id="pin-input" maxlength="4" placeholder="••••" class="text-center text-2xl border-2 rounded-xl p-3 w-40 mb-4 focus:border-gold outline-none">
+            <button onclick="verifyPin()" class="w-full bg-navy text-white font-bold py-3 rounded-xl hover:bg-slate-800 transition">دخول</button>
+        </div>
+
+        <!-- Main Admin Dashboard Content (Hidden until PIN verified) -->
+        <div id="admin-content" class="hidden space-y-6">
+            
+            <!-- Top Controls Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                
+                <!-- 1. Exchange Rate Control -->
+                <div class="bg-white rounded-xl shadow p-5 border-r-4 border-gold">
+                    <h3 class="font-bold text-gray-700 text-sm mb-3"><i class="fas fa-coins text-gold ml-1"></i> سعر الصرف اليومي (USD -> LYD)</h3>
+                    <div class="flex gap-2">
+                        <input type="number" step="0.01" id="admin-rate-input" class="border rounded-lg p-2 font-bold w-full text-lg outline-none focus:border-gold" placeholder="7.45">
+                        <button onclick="updateExchangeRate()" class="bg-navy text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-slate-800">حفظ</button>
+                    </div>
+                </div>
+
+                <!-- 2. Nuran & Ad Manager Balances -->
+                <div class="bg-white rounded-xl shadow p-5 border-r-4 border-blue-600">
+                    <h3 class="font-bold text-gray-700 text-sm mb-2"><i class="fas fa-credit-card text-blue-600 ml-1"></i> أرصدة النوران ومدير الإعلانات</h3>
+                    <div class="grid grid-cols-2 gap-2 text-center mt-3">
+                        <div class="bg-slate-50 p-2 rounded border">
+                            <span class="text-xs text-gray-500 block">بطاقة النوران</span>
+                            <span class="font-black text-sm text-gray-700" id="nuran-bal">$0.00</span>
+                        </div>
+                        <div class="bg-blue-50 p-2 rounded border border-blue-200">
+                            <span class="text-xs text-blue-600 block">مدير الإعلانات</span>
+                            <span class="font-black text-sm text-blue-800" id="ad-manager-bal">$0.00</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. Nuran Recharge Action -->
+                <div class="bg-white rounded-xl shadow p-5 border-r-4 border-green-600">
+                    <h3 class="font-bold text-gray-700 text-sm mb-2"><i class="fas fa-plus-circle text-green-600 ml-1"></i> شحن سريع للنوران</h3>
+                    <div class="flex gap-2">
+                        <input type="number" id="recharge-amount" placeholder="المبلغ $" class="border rounded-lg p-2 w-full text-sm outline-none">
+                        <button onclick="rechargeNuran()" class="bg-green-600 text-white px-3 py-2 rounded-lg text-sm font-bold hover:bg-green-700">شحن وتفريغ</button>
+                    </div>
+                    <span class="text-[10px] text-gray-400 block mt-2">* يتم تحويل الشحن فوراً لـ مدير الإعلانات وتصفير النوران تلقائياً.</span>
+                </div>
+
+            </div>
+
+            <!-- Orders Management Table -->
+            <div class="bg-white rounded-xl shadow overflow-hidden">
+                <div class="bg-navy text-white p-4 font-bold flex justify-between items-center">
+                    <span><i class="fas fa-tasks text-gold ml-2"></i> إدارة الطلبات والإعلانات</span>
+                    <span class="text-xs bg-slate-800 px-3 py-1 rounded-full text-gold" id="orders-count">0 طلبات</span>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-right text-sm">
+                        <thead class="bg-slate-50 border-b text-gray-600">
+                            <tr>
+                                <th class="p-3">تاريخ الطلب</th>
+                                <th class="p-3">القيمة ($)</th>
+                                <th class="p-3">المدة</th>
+                                <th class="p-3">الإجمالي (د.ل)</th>
+                                <th class="p-3">الرابط</th>
+                                <th class="p-3">الحالة</th>
+                                <th class="p-3 text-center">الإجراء</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admin-orders-table" class="divide-y text-gray-700">
+                            <tr>
+                                <td colspan="7" class="text-center p-4 text-gray-400">لا توجد طلبات جارية.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Firebase Script -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, onSnapshot, serverTimestamp, query, orderBy } 
+        import { getFirestore, collection, addDoc, onSnapshot, doc, setDoc, updateDoc, serverTimestamp, query, orderBy } 
             from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-        // إعدادات Firebase الخاصة بـ xmedia-db
         const firebaseConfig = {
             apiKey: "AIzaSyCeRCQr0KSM9uUVVxa-DJbAc4epzRjCNDM",
             authDomain: "xmedia-db.firebaseapp.com",
@@ -91,58 +180,163 @@
             appId: "1:76794291171:web:47cdfab692b937c6e176d6"
         };
 
-        // تهيئة التطبيق والقاعدة
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
-        const archivesRef = collection(db, "archives");
 
-        // إضافة سجل جديد
-        const form = document.getElementById("archiveForm");
-        form.addEventListener("submit", async (e) => {
-            e.preventDefault();
-            const title = document.getElementById("title").value;
-            const category = document.getElementById("category").value;
-            const notes = document.getElementById("notes").value;
+        // Global States
+        window.currentRate = 7.45;
+        window.adManagerBalance = 0;
 
-            try {
-                await addDoc(archivesRef, {
-                    title,
-                    category,
-                    notes,
-                    createdAt: serverTimestamp()
-                });
-                form.reset();
-            } catch (err) {
-                console.error("خطأ أثناء الحفظ:", err);
-                alert("حدث خطأ أثناء حفظ البيانات!");
+        // Initialize Settings Listener
+        onSnapshot(doc(db, "settings", "config"), (docSnap) => {
+            if (docSnap.exists()) {
+                const data = docSnap.data();
+                window.currentRate = data.exchangeRate || 7.45;
+                window.adManagerBalance = data.adManagerBalance || 0;
+                
+                document.getElementById('pub-rate-display').innerText = window.currentRate.toFixed(2);
+                document.getElementById('admin-rate-input').value = window.currentRate;
+                document.getElementById('ad-manager-bal').innerText = `$${window.adManagerBalance.toFixed(2)}`;
+                calculatePublic();
+            } else {
+                setDoc(doc(db, "settings", "config"), { exchangeRate: 7.45, adManagerBalance: 0 });
             }
         });
 
-        // قراءة البيانات لحظياً (Real-time)
-        const q = query(archivesRef, orderBy("createdAt", "desc"));
+        // Initialize Orders Listener
+        const q = query(collection(db, "orders"), orderBy("createdAt", "desc"));
         onSnapshot(q, (snapshot) => {
-            const tableBody = document.getElementById("dataTable");
+            const table = document.getElementById("admin-orders-table");
+            document.getElementById("orders-count").innerText = `${snapshot.size} طلبات`;
+            
             if (snapshot.empty) {
-                tableBody.innerHTML = `<tr><td colspan="4" class="text-center p-4 text-gray-400">لا توجد سجلات حالياً.</td></tr>`;
+                table.innerHTML = `<tr><td colspan="7" class="text-center p-4 text-gray-400">لا توجد طلبات جارية.</td></tr>`;
                 return;
             }
 
-            tableBody.innerHTML = "";
-            snapshot.forEach((doc) => {
-                const data = doc.data();
-                const date = data.createdAt ? new Date(data.createdAt.toDate()).toLocaleDateString("ar-LY") : "الآن";
-                
+            table.innerHTML = "";
+            snapshot.forEach((docSnap) => {
+                const data = docSnap.data();
+                const id = docSnap.id;
                 const tr = document.createElement("tr");
                 tr.className = "hover:bg-gray-50";
+
+                const statusBadge = data.status === 'active' 
+                    ? `<span class="bg-green-100 text-green-800 px-2 py-1 rounded text-xs font-bold">نشط</span>`
+                    : `<span class="bg-yellow-100 text-yellow-800 px-2 py-1 rounded text-xs font-bold">جديد</span>`;
+
+                const actionBtn = data.status === 'new'
+                    ? `<button onclick="activateOrder('${id}', ${data.amountUsd})" class="bg-green-600 text-white px-3 py-1 rounded text-xs font-bold hover:bg-green-700">تفعيل الإعلان</button>`
+                    : `<span class="text-xs text-gray-400">مميّن</span>`;
+
                 tr.innerHTML = `
-                    <td class="p-3 font-medium">${data.title || '-'}</td>
-                    <td class="p-3"><span class="bg-gray-100 text-gray-700 px-2 py-1 rounded text-xs">${data.category || '-'}</span></td>
-                    <td class="p-3">${data.notes || '-'}</td>
-                    <td class="p-3 text-gray-400 text-xs">${date}</td>
+                    <td class="p-3 text-xs">${data.createdAt ? new Date(data.createdAt.toDate()).toLocaleDateString("ar-LY") : 'الآن'}</td>
+                    <td class="p-3 font-bold text-navy">$${data.amountUsd}</td>
+                    <td class="p-3">${data.days} أيام</td>
+                    <td class="p-3 font-bold text-gold">${data.totalLyd} د.ل</td>
+                    <td class="p-3">${data.link ? `<a href="${data.link}" target="_blank" class="text-blue-600 hover:underline"><i class="fas fa-external-link-alt"></i> رابط</a>` : '-'}</td>
+                    <td class="p-3">${statusBadge}</td>
+                    <td class="p-3 text-center">${actionBtn}</td>
                 `;
-                tableBody.appendChild(tr);
+                table.appendChild(tr);
             });
         });
+
+        // Functions Exported to Window for Inline Handlers
+        window.calculatePublic = () => {
+            const usd = parseFloat(document.getElementById('pub-amount').value) || 0;
+            const days = parseInt(document.getElementById('pub-days').value) || 1;
+            const totalLyd = usd * window.currentRate;
+            const perDay = totalLyd / (days || 1);
+
+            document.getElementById('pub-total-lyd').innerText = `${totalLyd.toFixed(2)} د.ل`;
+            document.getElementById('pub-per-day').innerText = `${perDay.toFixed(2)} د.ل`;
+        };
+
+        window.submitOrder = async () => {
+            const usd = parseFloat(document.getElementById('pub-amount').value) || 0;
+            const days = parseInt(document.getElementById('pub-days').value) || 1;
+            const link = document.getElementById('pub-link').value;
+            const totalLyd = usd * window.currentRate;
+
+            if (usd <= 0) {
+                alert("يرجى إدخال قيمة إعلان صالحة!");
+                return;
+            }
+
+            try {
+                await addDoc(collection(db, "orders"), {
+                    amountUsd: usd,
+                    days: days,
+                    link: link,
+                    totalLyd: totalLyd,
+                    status: 'new',
+                    createdAt: serverTimestamp()
+                });
+                
+                // Construct WhatsApp Message
+                const msg = `مرحباً X-Media! أرغب في حجز إعلان بالتفاصيل التالية:%0A- القيمة: $${usd}%0A- المدة: ${days} أيام%0A- المبلغ الإجمالي: ${totalLyd.toFixed(2)} د.ل%0A- الرابط: ${link || 'غير محدد'}`;
+                window.open(`https://wa.me/?text=${msg}`, '_blank');
+            } catch (e) {
+                alert("حدث خطأ أثناء إرسال الطلب!");
+            }
+        };
+
+        window.updateExchangeRate = async () => {
+            const newRate = parseFloat(document.getElementById('admin-rate-input').value);
+            if (newRate > 0) {
+                await updateDoc(doc(db, "settings", "config"), { exchangeRate: newRate });
+                alert("تم تحديث سعر الصرف بنجاح!");
+            }
+        };
+
+        window.rechargeNuran = async () => {
+            const amt = parseFloat(document.getElementById('recharge-amount').value) || 0;
+            if (amt > 0) {
+                const newBal = window.adManagerBalance + amt;
+                await updateDoc(doc(db, "settings", "config"), { adManagerBalance: newBal });
+                document.getElementById('recharge-amount').value = '';
+                alert(`تم شحن $${amt} وتفريغها تلقائياً لمدير الإعلانات!`);
+            }
+        };
+
+        window.activateOrder = async (orderId, amountUsd) => {
+            if (window.adManagerBalance < amountUsd) {
+                alert("رصيد مدير الإعلانات غير كافٍ لتفعيل هذا الإعلان!");
+                return;
+            }
+            const newBal = window.adManagerBalance - amountUsd;
+            await updateDoc(doc(db, "settings", "config"), { adManagerBalance: newBal });
+            await updateDoc(doc(db, "orders", orderId), { status: 'active' });
+            alert("تم تفعيل الإعلان وخصم المبلغ من مدير الإعلانات بنجاح!");
+        };
+    </script>
+
+    <!-- UI Tab Switching and PIN Scripts -->
+    <script>
+        function switchTab(tab) {
+            if (tab === 'public') {
+                document.getElementById('public-section').classList.remove('hidden');
+                document.getElementById('admin-section').classList.add('hidden');
+                document.getElementById('tab-public').className = 'px-4 py-2 rounded-lg text-sm font-bold bg-gold text-white transition';
+                document.getElementById('tab-admin').className = 'px-4 py-2 rounded-lg text-sm font-bold bg-slate-800 text-gray-300 hover:text-white transition';
+            } else {
+                document.getElementById('public-section').classList.add('hidden');
+                document.getElementById('admin-section').classList.remove('hidden');
+                document.getElementById('tab-admin').className = 'px-4 py-2 rounded-lg text-sm font-bold bg-gold text-white transition';
+                document.getElementById('tab-public').className = 'px-4 py-2 rounded-lg text-sm font-bold bg-slate-800 text-gray-300 hover:text-white transition';
+            }
+        }
+
+        function verifyPin() {
+            const pin = document.getElementById('pin-input').value;
+            if (pin === '1234') { // الرمز السري الافتراضي
+                document.getElementById('pin-overlay').classList.add('hidden');
+                document.getElementById('admin-content').classList.remove('hidden');
+            } else {
+                alert('الرمز السري غير صحيح!');
+            }
+        }
     </script>
 </body>
 </html>
