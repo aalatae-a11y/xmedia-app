@@ -15,7 +15,7 @@
         .nav-btn.active { background: #d97706; }
 
         .container { max-width: 600px; margin: 20px auto; padding: 0 15px; }
-        .admin-container { max-width: 900px; margin: 20px auto; padding: 0 15px; }
+        .admin-container { max-width: 1000px; margin: 20px auto; padding: 0 15px; }
         
         .card { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); margin-bottom: 20px; border: 1px solid #e2e8f0; }
         .card-header { background: #0f172a; color: white; padding: 15px; text-align: center; border-radius: 8px 8px 0 0; margin: -20px -20px 20px -20px; }
@@ -45,7 +45,7 @@
         .hidden { display: none !important; }
 
         table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        th, td { padding: 10px; text-align: right; border-bottom: 1px solid #e2e8f0; font-size: 14px; }
+        th, td { padding: 10px; text-align: right; border-bottom: 1px solid #e2e8f0; font-size: 13px; }
         th { background: #f8fafc; color: #64748b; }
     </style>
 </head>
@@ -75,6 +75,40 @@
             <div class="form-group">
                 <label>مدة الإعلان (بالأيام)</label>
                 <input type="number" id="pub-days" value="1" min="1" step="1" class="form-control" oninput="calc()">
+            </div>
+
+            <!-- التعديلات المطلوبة للزبون (تفاصيل الحملة) -->
+            <div class="form-group">
+                <label>الهدف من الإعلان</label>
+                <select id="pub-obj" class="form-control">
+                    <option value="زيادة رسائل">زيادة رسائل</option>
+                    <option value="تفاعل ومشاركات">تفاعل ومشاركات</option>
+                    <option value="زيادة متابعين">زيادة متابعين للصفحة</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>المدن المستهدفة</label>
+                <input type="text" id="pub-loc" placeholder="مثال: طرابلس وضواحيها، بنغازي، كل ليبيا..." class="form-control">
+            </div>
+
+            <div class="form-group">
+                <label>الفئة المستهدفة (الجنس)</label>
+                <select id="pub-gender" class="form-control">
+                    <option value="الكل (رجال ونساء)">الكل (رجال ونساء)</option>
+                    <option value="رجال فقط">رجال فقط</option>
+                    <option value="نساء فقط">نساء فقط</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>طريقة الدفع والسداد</label>
+                <select id="pub-payment" class="form-control">
+                    <option value="تسليم للمندوب (كاش)">تسليم للمندوب (كاش)</option>
+                    <option value="خصم من الرصيد المودع">خصم من الرصيد المودع</option>
+                    <option value="تحويل بنكي / سداد / تداول">تحويل بنكي / سداد / تداول</option>
+                    <option value="دفع آجل (عملاء مسجلين)">دفع آجل (عملاء مسجلين)</option>
+                </select>
             </div>
 
             <div class="form-group">
@@ -151,21 +185,25 @@
                 </div>
             </div>
             <div class="card">
-                <h3>إدارة الطلبات والإعلانات</h3>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>التاريخ</th>
-                            <th>القيمة ($)</th>
-                            <th>المدة</th>
-                            <th>الإجمالي (د.ل)</th>
-                            <th>الرابط</th>
-                            <th>الحالة</th>
-                            <th>الإجراء</th>
-                        </tr>
-                    </thead>
-                    <tbody id="orders-list"></tbody>
-                </table>
+                <h3>إدارة الطلبات والإعلانات الواردة</h3>
+                <div style="overflow-x: auto;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>التاريخ</th>
+                                <th>القيمة ($)</th>
+                                <th>الهدف</th>
+                                <th>المدن / الجنس</th>
+                                <th>طريقة الدفع</th>
+                                <th>الإجمالي (د.ل)</th>
+                                <th>الرابط</th>
+                                <th>الحالة</th>
+                                <th>الإجراء</th>
+                            </tr>
+                        </thead>
+                        <tbody id="orders-list"></tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
@@ -259,6 +297,10 @@
         document.getElementById('btn-submit').onclick = async () => {
             var usd = parseFloat(document.getElementById('pub-usd').value) || 0;
             var days = parseInt(document.getElementById('pub-days').value) || 0;
+            var obj = document.getElementById('pub-obj').value;
+            var loc = document.getElementById('pub-loc').value.trim() || "غير محدد";
+            var gender = document.getElementById('pub-gender').value;
+            var payment = document.getElementById('pub-payment').value;
             var link = document.getElementById('pub-link').value.trim();
 
             if (usd <= 0 || days <= 0 || !Number.isInteger(usd / days)) {
@@ -270,9 +312,29 @@
             var total = usd * (window.EX_RATE * 1.20);
             var roundedTotal = Math.round(total / 5) * 5;
 
-            await addDoc(collection(db, "orders"), { amountUsd: usd, days: days, link: link, totalLyd: roundedTotal, status: 'new', createdAt: serverTimestamp() });
+            // حفظ الطلب بالتفاصيل الجديدة في الفايربيس
+            await addDoc(collection(db, "orders"), { 
+                amountUsd: usd, 
+                days: days, 
+                objective: obj,
+                location: loc,
+                gender: gender,
+                paymentMethod: payment,
+                link: link, 
+                totalLyd: roundedTotal, 
+                status: 'new', 
+                createdAt: serverTimestamp() 
+            });
             
-            var msg = "مرحباً X-Media! أرغب في حجز إعلان بقيمة $" + usd + " لمدة " + days + " أيام. المبلغ المطلوب: " + roundedTotal + " د.ل. الرابط: " + link;
+            // تجهيز نص رسالة الواتساب للزبون
+            var msg = "مرحباً X-Media! أرغب في حجز إعلان جديد:\n" +
+                      "▪ الميزانية والمدة: $" + usd + " لمدة " + days + " أيام\n" +
+                      "▪ الهدف من الإعلان: " + obj + "\n" +
+                      "▪ المدن والجنس: " + loc + " (" + gender + ")\n" +
+                      "▪ طريقة الدفع: " + payment + "\n" +
+                      "▪ المبلغ المطلوب: " + roundedTotal + " د.ل\n" +
+                      "▪ رابط المنشور: " + link;
+
             window.open("https://wa.me/218910756281?text=" + encodeURIComponent(msg), '_blank');
         };
 
@@ -292,20 +354,19 @@
             snap.forEach(d => {
                 var o = d.data();
                 var tr = document.createElement('tr');
-                tr.innerHTML = `<td>${o.createdAt ? new Date(o.createdAt.toDate()).toLocaleDateString('ar-LY') : 'الآن'}</td><td>$${o.amountUsd}</td><td>${o.days}</td><td>${o.totalLyd} د.ل</td><td><a href="${o.link}" target="_blank">رابط</a></td><td>${o.status === 'active' ? 'نشط' : 'جديد'}</td><td id="act-${d.id}"></td>`;
+                tr.innerHTML = `<td>${o.createdAt ? new Date(o.createdAt.toDate()).toLocaleDateString('ar-LY') : 'الآن'}</td>
+                                <td>$${o.amountUsd} (${o.days} أيام)</td>
+                                <td><span class="badge" style="background:#e2e8f0; padding:2px 6px; border-radius:4px; font-weight:bold;">${o.objective || 'رسائل'}</span></td>
+                                <td>${o.location || '-'}<br><small style="color:#64748b;">${o.gender || 'الكل'}</small></td>
+                                <td><strong style="color:#2563eb;">${o.paymentMethod || 'كاش'}</strong></td>
+                                <td>${o.totalLyd} د.ل</td>
+                                <td><a href="${o.link}" target="_blank">رابط</a></td>
+                                <td>${o.status === 'active' ? 'نشط' : 'جديد'}</td>
+                                <td id="act-${d.id}"></td>`;
                 list.appendChild(tr);
                 if(o.status === 'new') {
                     var btn = document.createElement('button');
-                    btn.innerText = "تفعيل"; btn.className = "btn btn-green"; btn.style.padding = "4px";
+                    btn.innerText = "تفعيل"; btn.className = "btn btn-green"; btn.style.padding = "4px 8px"; btn.style.fontSize = "12px";
                     btn.onclick = async () => {
                         await updateDoc(doc(db, "settings", "config"), { adManagerBalance: window.AD_BAL - o.amountUsd });
-                        await updateDoc(doc(db, "orders", d.id), { status: 'active' });
-                        alert("تم التفعيل!");
-                    };
-                    document.getElementById('act-' + d.id).appendChild(btn);
-                }
-            });
-        });
-    </script>
-</body>
-                            </html>
+                        await upd
