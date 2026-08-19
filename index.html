@@ -8,7 +8,6 @@
         * { box-sizing: border-box; font-family: system-ui, -apple-system, sans-serif; margin: 0; padding: 0; }
         body { background-color: #f1f5f9; color: #334155; padding-bottom: 40px; }
         
-        /* Navbar */
         .navbar { background-color: #0f172a; color: white; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; }
         .logo { font-size: 20px; font-weight: bold; color: #d97706; }
         .nav-btn { background: #1e293b; color: white; border: none; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; margin-right: 5px; }
@@ -25,9 +24,7 @@
         .form-control { width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 15px; outline: none; }
         .form-control:focus { border-color: #d97706; }
 
-        /* تصميم مربع اختيار المدن */
         .city-select-box { border: 1px solid #cbd5e1; border-radius: 8px; background: #fff; padding: 10px; }
-        .city-select-box select { width: 100%; padding: 8px; border: 1px solid #e2e8f0; border-radius: 6px; font-size: 14px; outline: none; }
         .city-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 8px; }
         .city-tag { background: #eff6ff; color: #1e40af; border: 1px solid #bfdbfe; padding: 3px 8px; border-radius: 15px; font-size: 12px; display: flex; align-items: center; gap: 5px; }
         .city-tag span { cursor: pointer; font-weight: bold; color: #ef4444; }
@@ -68,8 +65,8 @@
     <div class="navbar">
         <div class="logo">X-MEDIA</div>
         <div>
-            <button class="nav-btn active" id="btn-tab-pub" onclick="showTab('pub')">حاسبة الزبون</button>
-            <button class="nav-btn" id="btn-tab-adm" onclick="showTab('adm')">المنظومة الداخلية</button>
+            <button class="nav-btn active" id="btn-tab-pub">حاسبة الزبون</button>
+            <button class="nav-btn" id="btn-tab-adm">المنظومة الداخلية</button>
         </div>
     </div>
 
@@ -83,12 +80,12 @@
 
             <div class="form-group">
                 <label>قيمة الإعلان المطلوبة بالدولار ($)</label>
-                <input type="number" id="pub-usd" value="1" min="1" step="1" class="form-control" oninput="onBudgetChange()">
+                <input type="number" id="pub-usd" value="1" min="1" step="1" class="form-control">
             </div>
 
             <div class="form-group">
                 <label>مدة الإعلان (بالأيام)</label>
-                <input type="number" id="pub-days" value="1" min="1" step="1" class="form-control" oninput="calc()">
+                <input type="number" id="pub-days" value="1" min="1" step="1" class="form-control">
             </div>
 
             <div class="form-group">
@@ -100,14 +97,14 @@
                 </select>
             </div>
 
-            <!-- قائمة اختيار المدن المنسدلة بأناقة -->
+            <!-- قائمة اختيار المدن المنسدلة -->
             <div class="form-group">
                 <label style="display: flex; justify-content: space-between;">
                     <span>المدن المستهدفة</span>
                     <span id="city-limit-info" style="font-size: 12px; color: #d97706;">(المسموح: مدينة واحدة)</span>
                 </label>
                 <div class="city-select-box">
-                    <select id="city-dropdown-select" onchange="addCityFromDropdown()">
+                    <select id="city-dropdown-select" class="form-control">
                         <option value="">-- اضغط هنا لاختيار مدينة من القائمة --</option>
                     </select>
                     <div class="city-tags" id="selected-city-tags"></div>
@@ -125,7 +122,7 @@
 
             <div class="form-group">
                 <label>طريقة الدفع والسداد</label>
-                <select id="pub-payment" class="form-control" onchange="calc()">
+                <select id="pub-payment" class="form-control">
                     <option value="cash">تسليم للمندوب (كاش)</option>
                     <option value="bank">تحويل بنكي / سداد / تداول (+5% عمولة)</option>
                 </select>
@@ -155,7 +152,7 @@
                 <p style="font-size: 11px; color: #475569; margin-bottom: 8px;">1. انسخ اسم حسابنا الإعلاني الآتي:</p>
                 <div class="copy-input-group">
                     <input type="text" id="acc-name" value="Rudy Alqalaly" readonly class="form-control" style="font-weight: bold; background: #fff; font-size: 13px;">
-                    <button class="btn-copy" onclick="copyAccName()">نسخ الاسم</button>
+                    <button class="btn-copy" id="btn-copy-acc">نسخ الاسم</button>
                 </div>
                 <p style="font-size: 11px; color: #475569; margin-bottom: 8px;">2. اضغط الزر أدناه للانتقال لإعدادات فيسبوك وإضافتنا كمدير/محرر:</p>
                 <a href="https://www.facebook.com/settings?tab=profile_access" target="_blank" class="btn btn-blue" style="padding: 8px; font-size: 12px;">
@@ -164,7 +161,7 @@
             </div>
 
             <div style="display: flex; gap: 10px; margin-top: 15px;">
-                <button class="btn btn-dark" onclick="calc()">حساب التكلفة فقط</button>
+                <button class="btn btn-dark" id="btn-calc-only">حساب التكلفة فقط</button>
                 <button class="btn btn-green" id="btn-submit">تأكيد الطلب وحجز الإعلان</button>
             </div>
         </div>
@@ -176,18 +173,18 @@
             <h3>المنظومة الداخلية المالية</h3>
             <p style="font-size: 12px; color: #64748b; margin-bottom: 15px;">أدخل الرمز السري للوصول</p>
             <input type="password" id="pin-input" placeholder="••••" class="form-control" style="text-align: center; margin-bottom: 15px;">
-            <button class="btn btn-navy" onclick="login()">دخول</button>
+            <button class="btn btn-navy" id="btn-login">دخول</button>
         </div>
 
         <div id="admin-main" class="hidden">
             <div class="grid-kpi">
                 <div class="kpi-card">
-                    <span style="font-size: 12px; color: #64748b;">سعر بيع الدولار (الكاش)</span>
-                    <div class="kpi-val" id="kpi-selling-rate" style="color:#d97706;">0 د.ل</div>
+                    <span style="font-size: 12px; color: #64748b;">سعر الشراء الأساسي (د.ل)</span>
+                    <div class="kpi-val" id="kpi-cost-rate" style="color:#2563eb;">0 د.ل</div>
                 </div>
                 <div class="kpi-card">
-                    <span style="font-size: 12px; color: #64748b;">متوسط تكلفة الشراء</span>
-                    <div class="kpi-val" id="kpi-cost-rate" style="color:#2563eb;">0 د.ل</div>
+                    <span style="font-size: 12px; color: #64748b;">سعر بيع للزبون (شامل الـ 20%)</span>
+                    <div class="kpi-val" id="kpi-selling-rate" style="color:#d97706;">0 د.ل</div>
                 </div>
                 <div class="kpi-card">
                     <span style="font-size: 12px; color: #64748b;">إجمالي الإيرادات المفلترة</span>
@@ -201,18 +198,11 @@
 
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px;">
                 <div class="card">
-                    <h4 style="margin-bottom: 10px;">1. تحديث سعر بيع الدولار (الكاش الأساسي)</h4>
+                    <h4 style="margin-bottom: 10px;">تسجيل سعر شراء الدولار الأصلي (بدون أي زيادة)</h4>
+                    <p style="font-size: 11px; color: #64748b; margin-bottom: 8px;">ادخل قداش شريت الدولار، والمنظومة روحها تحسب للزبون (+20%)</p>
                     <div style="display: flex; gap: 5px;">
-                        <input type="number" id="adm-rate" step="0.01" class="form-control" placeholder="مثال: 7.45">
-                        <button type="button" class="btn btn-navy" id="btn-save-rate" style="width: 100px;">حفظ</button>
-                    </div>
-                </div>
-                <div class="card">
-                    <h4 style="margin-bottom: 10px;">2. تسجيل عملية شراء دولار (لتحديد التكلفة)</h4>
-                    <div style="display: flex; gap: 5px;">
-                        <input type="number" id="buy-usd-amount" class="form-control" placeholder="الكمية ($)">
-                        <input type="number" id="buy-usd-rate" step="0.01" class="form-control" placeholder="سعر الشراء (د.ل)">
-                        <button type="button" class="btn btn-green" id="btn-add-buy" style="width: 110px;">تسجيل</button>
+                        <input type="number" id="buy-usd-rate" step="0.01" class="form-control" placeholder="مثال: 7.00">
+                        <button type="button" class="btn btn-green" id="btn-save-buy-rate" style="width: 120px;">حفظ السعر</button>
                     </div>
                 </div>
             </div>
@@ -220,9 +210,9 @@
             <div class="card" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
                 <h4>جدول الحركة المالية والإعلانات</h4>
                 <div style="display: flex; gap: 8px;">
-                    <button class="btn btn-dark" style="width: auto; padding: 6px 12px; font-size: 12px;" onclick="setFilter('all')">الكل</button>
-                    <button class="btn btn-dark" style="width: auto; padding: 6px 12px; font-size: 12px;" onclick="setFilter('week')">هذا الأسبوع</button>
-                    <button class="btn btn-dark" style="width: auto; padding: 6px 12px; font-size: 12px;" onclick="setFilter('month')">هذا الشهر</button>
+                    <button class="btn btn-dark" style="width: auto; padding: 6px 12px; font-size: 12px;" id="btn-filter-all">الكل</button>
+                    <button class="btn btn-dark" style="width: auto; padding: 6px 12px; font-size: 12px;" id="btn-filter-week">هذا الأسبوع</button>
+                    <button class="btn btn-dark" style="width: auto; padding: 6px 12px; font-size: 12px;" id="btn-filter-month">هذا الشهر</button>
                 </div>
             </div>
 
@@ -249,12 +239,29 @@
         </div>
     </div>
 
-    <script>
-        window.EX_RATE = 7.45;
-        window.AVG_COST_RATE = 7.00;
-        window.CURRENT_FILTER = 'all';
-        window.ALL_ORDERS = [];
-        window.SELECTED_CITIES = [];
+    <!-- السكربت البرمجي -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, doc, setDoc, onSnapshot, collection, addDoc, serverTimestamp, query, orderBy } 
+            from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCeRCQr0KSM9uUVVxa-DJbAc4epzRjCNDM",
+            authDomain: "xmedia-db.firebaseapp.com",
+            projectId: "xmedia-db",
+            storageBucket: "xmedia-db.firebasestorage.app",
+            messagingSenderId: "76794291171",
+            appId: "1:76794291171:web:47cdfab692b937c6e176d6"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // المتغيرات العامة
+        let BUY_RATE = 7.00; // سعر الشراء الحقيقي المباشر
+        let CURRENT_FILTER = 'all';
+        let ALL_ORDERS = [];
+        let SELECTED_CITIES = [];
 
         const LIBYAN_CITIES = [
             "طرابلس", "ضواحي طرابلس", "مصراتة", "زليتن", "الخمس", "الزاوية", "ورشفانة", "صرمان", 
@@ -266,6 +273,15 @@
             "أوباري", "الكفرة", "أم الأرانب", "تراغن", "مرزق", "غات", "ودان"
         ];
 
+        // تعبئة قائمة المدن
+        const citySelect = document.getElementById('city-dropdown-select');
+        LIBYAN_CITIES.forEach(city => {
+            const opt = document.createElement('option');
+            opt.value = city;
+            opt.textContent = city;
+            citySelect.appendChild(opt);
+        });
+
         function getCityLimit(usd) {
             if (usd < 5) return 1;
             if (usd < 10) return 3;
@@ -274,56 +290,58 @@
             return LIBYAN_CITIES.length;
         }
 
-        function initCityDropdownSelect() {
-            const select = document.getElementById('city-dropdown-select');
-            select.innerHTML = '<option value="">-- اضغط هنا لاختيار مدينة من القائمة --</option>';
-            LIBYAN_CITIES.forEach((city) => {
-                const opt = document.createElement('option');
-                opt.value = city;
-                opt.innerText = city;
-                select.appendChild(opt);
+        function renderCityTags() {
+            const container = document.getElementById('selected-city-tags');
+            container.innerHTML = '';
+            SELECTED_CITIES.forEach(city => {
+                const tag = document.createElement('div');
+                tag.className = 'city-tag';
+                tag.innerHTML = `${city} <span data-city="${city}">✕</span>`;
+                tag.querySelector('span').onclick = () => {
+                    SELECTED_CITIES = SELECTED_CITIES.filter(c => c !== city);
+                    renderCityTags();
+                };
+                container.appendChild(tag);
             });
         }
 
-        function addCityFromDropdown() {
-            const select = document.getElementById('city-dropdown-select');
-            const city = select.value;
+        citySelect.onchange = () => {
+            const city = citySelect.value;
             if (!city) return;
-
             const usd = parseFloat(document.getElementById('pub-usd').value) || 0;
             const limit = getCityLimit(usd);
 
-            if (window.SELECTED_CITIES.includes(city)) {
+            if (SELECTED_CITIES.includes(city)) {
                 alert("هذه المدينة مختارة بالفعل!");
-                select.value = "";
-                return;
-            }
-
-            if (window.SELECTED_CITIES.length >= limit) {
+            } else if (SELECTED_CITIES.length >= limit) {
                 alert(`الميزانية الحالية ($${usd}) تسمح باختيار ${limit} مدن كأقصى حد!`);
-                select.value = "";
-                return;
+            } else {
+                SELECTED_CITIES.push(city);
+                renderCityTags();
             }
+            citySelect.value = "";
+        };
 
-            window.SELECTED_CITIES.push(city);
-            renderSelectedCityTags();
-            select.value = "";
-        }
+        function roundToFive(num) { return Math.round(num / 5) * 5; }
 
-        function removeCity(city) {
-            window.SELECTED_CITIES = window.SELECTED_CITIES.filter(c => c !== city);
-            renderSelectedCityTags();
-        }
+        function calc() {
+            const usd = parseFloat(document.getElementById('pub-usd').value) || 0;
+            const days = parseInt(document.getElementById('pub-days').value) || 0;
+            const payMethod = document.getElementById('pub-payment').value;
+            const valMsg = document.getElementById('div-validation-msg');
 
-        function renderSelectedCityTags() {
-            const container = document.getElementById('selected-city-tags');
-            container.innerHTML = '';
-            window.SELECTED_CITIES.forEach(city => {
-                const tag = document.createElement('div');
-                tag.className = 'city-tag';
-                tag.innerHTML = `${city} <span onclick="removeCity('${city}')">✕</span>`;
-                container.appendChild(tag);
-            });
+            const isValid = (usd > 0) && (days > 0) && (Number.isInteger(usd / days));
+            if (!isValid && (usd > 0 || days > 0)) { valMsg.classList.remove('hidden'); } else { valMsg.classList.add('hidden'); }
+
+            // سعر بيع الكاش للزبون = سعر الشراء اللي دخلته + 20% ربح
+            const sellRate = BUY_RATE * 1.20;
+            let totalCash = usd * sellRate;
+            if (payMethod === 'bank') totalCash *= 1.05;
+
+            const roundedTotal = roundToFive(totalCash); 
+            document.getElementById('res-total').innerText = roundedTotal + " د.ل";
+            document.getElementById('res-day-lyd').innerText = days > 0 ? (roundedTotal / days).toFixed(1) + " د.ل" : "0 د.ل";
+            document.getElementById('res-day-usd').innerText = "$" + (days > 0 ? (usd / days) : 0);
         }
 
         function onBudgetChange() {
@@ -331,51 +349,171 @@
             const limit = getCityLimit(usd);
             document.getElementById('city-limit-info').innerText = `(المسموح: ${limit === LIBYAN_CITIES.length ? 'كل المدن' : limit + ' مدن'})`;
             
-            if (window.SELECTED_CITIES.length > limit) {
-                window.SELECTED_CITIES = window.SELECTED_CITIES.slice(0, limit);
-                renderSelectedCityTags();
+            if (SELECTED_CITIES.length > limit) {
+                SELECTED_CITIES = SELECTED_CITIES.slice(0, limit);
+                renderCityTags();
             }
             calc();
         }
 
-        function getSelectedCitiesText() {
-            return window.SELECTED_CITIES.length > 0 ? window.SELECTED_CITIES.join('، ') : "غير محدد";
-        }
+        document.getElementById('pub-usd').oninput = onBudgetChange;
+        document.getElementById('pub-days').oninput = calc;
+        document.getElementById('pub-payment').onchange = calc;
+        document.getElementById('btn-calc-only').onclick = calc;
 
-        function showTab(t) {
-            if(t === 'pub') {
-                document.getElementById('section-public').classList.remove('hidden');
-                document.getElementById('section-admin').classList.add('hidden');
-                document.getElementById('btn-tab-pub').classList.add('active');
-                document.getElementById('btn-tab-adm').classList.remove('active');
-            } else {
-                document.getElementById('section-public').classList.add('hidden');
-                document.getElementById('section-admin').classList.remove('hidden');
-                document.getElementById('btn-tab-adm').classList.add('active');
-                document.getElementById('btn-tab-pub').classList.remove('active');
-            }
-        }
+        // التنقل بين الأقسام
+        document.getElementById('btn-tab-pub').onclick = () => {
+            document.getElementById('section-public').classList.remove('hidden');
+            document.getElementById('section-admin').classList.add('hidden');
+            document.getElementById('btn-tab-pub').classList.add('active');
+            document.getElementById('btn-tab-adm').classList.remove('active');
+        };
 
-        function login() {
-            var pin = document.getElementById('pin-input').value;
-            if(pin === "5412") {
+        document.getElementById('btn-tab-adm').onclick = () => {
+            document.getElementById('section-public').classList.add('hidden');
+            document.getElementById('section-admin').classList.remove('hidden');
+            document.getElementById('btn-tab-adm').classList.add('active');
+            document.getElementById('btn-tab-pub').classList.remove('active');
+        };
+
+        // دخول الأدمن
+        document.getElementById('btn-login').onclick = () => {
+            if (document.getElementById('pin-input').value === "5412") {
                 document.getElementById('pin-box').classList.add('hidden');
                 document.getElementById('admin-main').classList.remove('hidden');
-            } else { 
-                alert("رمز خاطئ!"); 
+            } else {
+                alert("رمز خاطئ!");
             }
+        };
+
+        // نسخ الاسم
+        document.getElementById('btn-copy-acc').onclick = () => {
+            const copyText = document.getElementById("acc-name");
+            copyText.select();
+            navigator.clipboard.writeText(copyText.value);
+            alert("تم نسخ الاسم بنجاح: " + copyText.value);
+        };
+
+        // حفظ سعر الشراء الحقيقي للدولار مباشرة بدون إضافة 20%
+        document.getElementById('btn-save-buy-rate').onclick = async () => {
+            const rate = parseFloat(document.getElementById('buy-usd-rate').value) || 0;
+
+            if (rate > 0) {
+                await setDoc(doc(db, "settings", "config"), { buyRate: rate }, { merge: true });
+                alert("تم حفظ سعر الشراء بنجاح!");
+            } else { alert("يرجى إدخال سعر شراء صحيح!"); }
+        };
+
+        // إرسال الطلب وحجزه
+        document.getElementById('btn-submit').onclick = async () => {
+            const usd = parseFloat(document.getElementById('pub-usd').value) || 0;
+            const days = parseInt(document.getElementById('pub-days').value) || 0;
+            const obj = document.getElementById('pub-obj').value;
+            const loc = SELECTED_CITIES.length > 0 ? SELECTED_CITIES.join('، ') : "غير محدد";
+            const gender = document.getElementById('pub-gender').value;
+            const payKey = document.getElementById('pub-payment').value;
+            const payText = payKey === 'bank' ? "تحويل بنكي / سداد / تداول (+5%)" : "تسليم للمندوب (كاش)";
+            const link = document.getElementById('pub-link').value.trim();
+
+            if (usd <= 0 || days <= 0 || !Number.isInteger(usd / days)) {
+                alert("يرجى التأكد من البيانات (يجب أن يكون ناتج القسمة صحيحاً)!");
+                return;
+            }
+            if (!link) { alert("رابط المنشور مطلوب!"); return; }
+
+            const sellRate = BUY_RATE * 1.20;
+            let totalCash = usd * sellRate;
+            if (payKey === 'bank') totalCash *= 1.05;
+
+            const roundedTotal = roundToFive(totalCash);
+            const costPrice = usd * BUY_RATE; // التكلفة الفعلية المباشرة
+            const netProfit = roundedTotal - costPrice; // صافي الربح الحقيقي
+
+            await addDoc(collection(db, "orders"), { 
+                amountUsd: usd, 
+                days: days, 
+                objective: obj,
+                location: loc,
+                gender: gender,
+                paymentMethod: payText,
+                link: link, 
+                totalLyd: roundedTotal,
+                costLyd: costPrice,
+                profitLyd: netProfit,
+                status: 'new', 
+                createdAt: serverTimestamp() 
+            });
+            
+            const msg = `مرحباً X-Media! أرغب في حجز إعلان جديد:\n▪ الميزانية والمدة: $${usd} لمدة ${days} أيام\n▪ الهدف من الإعلان: ${obj}\n▪ المدن والجنس: ${loc} (${gender})\n▪ طريقة الدفع: ${payText}\n▪ المبلغ المطلوب: ${roundedTotal} د.ل\n▪ رابط المنشور: ${link}`;
+            window.open("https://wa.me/218910756281?text=" + encodeURIComponent(msg), '_blank');
+        };
+
+        // المراقبة والربط مع الفايربيس
+        onSnapshot(doc(db, "settings", "config"), (snap) => {
+            if (snap.exists()) {
+                BUY_RATE = snap.data().buyRate || 7.00;
+                document.getElementById('buy-usd-rate').value = BUY_RATE;
+                document.getElementById('kpi-cost-rate').innerText = BUY_RATE.toFixed(2) + " د.ل";
+                document.getElementById('kpi-selling-rate').innerText = (BUY_RATE * 1.20).toFixed(2) + " د.ل";
+                calc();
+            }
+        });
+
+        onSnapshot(query(collection(db, "orders"), orderBy("createdAt", "desc")), (snap) => {
+            ALL_ORDERS = [];
+            snap.forEach(d => {
+                const o = d.data();
+                o.id = d.id;
+                ALL_ORDERS.push(o);
+            });
+            renderAdminOrders();
+        });
+
+        document.getElementById('btn-filter-all').onclick = () => { CURRENT_FILTER = 'all'; renderAdminOrders(); };
+        document.getElementById('btn-filter-week').onclick = () => { CURRENT_FILTER = 'week'; renderAdminOrders(); };
+        document.getElementById('btn-filter-month').onclick = () => { CURRENT_FILTER = 'month'; renderAdminOrders(); };
+
+        function renderAdminOrders() {
+            const list = document.getElementById('orders-list');
+            list.innerHTML = '';
+            let totalRev = 0;
+            let totalProf = 0;
+            const now = new Date();
+
+            const filtered = ALL_ORDERS.filter(o => {
+                if (!o.createdAt) return true;
+                const oDate = o.createdAt.toDate();
+                if (CURRENT_FILTER === 'week') {
+                    return ((now - oDate) / (1000 * 60 * 60 * 24)) <= 7;
+                } else if (CURRENT_FILTER === 'month') {
+                    return oDate.getMonth() === now.getMonth() && oDate.getFullYear() === now.getFullYear();
+                }
+                return true;
+            });
+
+            filtered.forEach(o => {
+                totalRev += (o.totalLyd || 0);
+                totalProf += (o.profitLyd || 0);
+
+                const tr = document.createElement('tr');
+                tr.innerHTML = `<td>${o.createdAt ? new Date(o.createdAt.toDate()).toLocaleDateString('ar-LY') : 'الآن'}</td>
+                                <td>$${o.amountUsd} (${o.days} أيام)</td>
+                                <td><strong>${o.objective || '-'}</strong><br><small style="color:#64748b;">${o.location || '-'}</small></td>
+                                <td><small>${o.paymentMethod || 'كاش'}</small></td>
+                                <td style="font-weight:bold;">${o.totalLyd} د.ل</td>
+                                <td>${o.costLyd ? o.costLyd.toFixed(0) + ' د.ل' : '-'}</td>
+                                <td><span class="badge ${o.profitLyd >= 0 ? 'badge-profit' : 'badge-loss'}">${o.profitLyd ? o.profitLyd.toFixed(0) + ' د.ل' : '-'}</span></td>
+                                <td><a href="${o.link}" target="_blank">رابط</a></td>
+                                <td><span class="badge" style="background:#e2e8f0;">${o.status === 'active' ? 'نشط' : 'جديد'}</span></td>`;
+                list.appendChild(tr);
+            });
+
+            document.getElementById('kpi-total-revenue').innerText = totalRev + " د.ل";
+            document.getElementById('kpi-total-profit').innerText = totalProf.toFixed(0) + " د.ل";
         }
 
-        function roundToFive(num) { return Math.round(num / 5) * 5; }
-
-        function calc() {
-            var usd = parseFloat(document.getElementById('pub-usd').value) || 0;
-            var days = parseInt(document.getElementById('pub-days').value) || 0;
-            var payMethod = document.getElementById('pub-payment').value;
-            var valMsg = document.getElementById('div-validation-msg');
-
-            var isValid = (usd > 0) && (days > 0) && (Number.isInteger(usd / days));
-            if (!isValid && (usd > 0 || days > 0)) { valMsg.classList.remove('hidden'); } else { valMsg.classList.add('hidden'); }
-
-            var totalCash = usd * (window.EX_RATE * 1.20);
-       
+        // تشغيل الحسبة المبدئية
+        onBudgetChange();
+    </script>
+</body>
+</html>
