@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>X-Media | منظومة الإعلانات والحسابات</title>
+    <title>X-Media | منظومة الإعلانات والمالية</title>
     <style>
         * { box-sizing: border-box; font-family: system-ui, -apple-system, sans-serif; margin: 0; padding: 0; }
         body { background-color: #f1f5f9; color: #334155; padding-bottom: 40px; }
@@ -14,16 +14,19 @@
         .nav-btn { background: #1e293b; color: white; border: none; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; margin-right: 5px; }
         .nav-btn.active { background: #d97706; }
 
-        .container { max-width: 600px; margin: 20px auto; padding: 0 15px; }
-        .admin-container { max-width: 1000px; margin: 20px auto; padding: 0 15px; }
+        .container { max-width: 650px; margin: 20px auto; padding: 0 15px; }
+        .admin-container { max-width: 1100px; margin: 20px auto; padding: 0 15px; }
         
         .card { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); margin-bottom: 20px; border: 1px solid #e2e8f0; }
         .card-header { background: #0f172a; color: white; padding: 15px; text-align: center; border-radius: 8px 8px 0 0; margin: -20px -20px 20px -20px; }
         
         .form-group { margin-bottom: 15px; }
         .form-group label { display: block; font-weight: bold; margin-bottom: 5px; font-size: 14px; }
-        .form-control { width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 16px; outline: none; }
+        .form-control { width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 15px; outline: none; }
         .form-control:focus { border-color: #d97706; }
+
+        .cities-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 8px; background: #f8fafc; padding: 12px; border-radius: 8px; border: 1px solid #cbd5e1; max-height: 180px; overflow-y: auto; }
+        .city-item { font-size: 13px; display: flex; align-items: center; gap: 5px; cursor: pointer; }
 
         .btn { width: 100%; padding: 12px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 14px; text-align: center; text-decoration: none; display: inline-block; }
         .btn-green { background: #16a34a; color: white; }
@@ -35,18 +38,25 @@
         .result-price { font-size: 28px; font-weight: bold; color: #0f172a; margin: 5px 0; }
 
         .access-box { background: #eff6ff; border: 1px dashed #3b82f6; border-radius: 8px; padding: 15px; margin-top: 15px; text-align: right; }
-        .access-header { font-size: 13px; font-weight: bold; color: #1e40af; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between; }
+        .access-header { font-size: 13px; font-weight: bold; color: #1e40af; margin-bottom: 8px; }
         .copy-input-group { display: flex; gap: 5px; margin-bottom: 10px; }
         .btn-copy { background: #3b82f6; color: white; border: none; padding: 8px 12px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 12px; }
 
         .error-msg { color: #dc2626; background: #fef2f2; border: 1px solid #fecaca; padding: 10px; border-radius: 8px; font-size: 12px; font-weight: bold; margin-bottom: 15px; text-align: center; }
 
-        .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; }
+        .grid-kpi { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 20px; }
+        .kpi-card { background: white; padding: 15px; border-radius: 10px; border: 1px solid #e2e8f0; text-align: center; }
+        .kpi-val { font-size: 22px; font-weight: bold; margin-top: 5px; }
+
         .hidden { display: none !important; }
 
         table { width: 100%; border-collapse: collapse; margin-top: 10px; }
         th, td { padding: 10px; text-align: right; border-bottom: 1px solid #e2e8f0; font-size: 13px; }
         th { background: #f8fafc; color: #64748b; }
+        
+        .badge { padding: 3px 8px; border-radius: 4px; font-size: 11px; font-weight: bold; }
+        .badge-profit { background: #dcfce7; color: #15803d; }
+        .badge-loss { background: #fee2e2; color: #b91c1c; }
     </style>
 </head>
 <body>
@@ -69,7 +79,7 @@
 
             <div class="form-group">
                 <label>قيمة الإعلان المطلوبة بالدولار ($)</label>
-                <input type="number" id="pub-usd" value="1" min="1" step="1" class="form-control" oninput="calc()">
+                <input type="number" id="pub-usd" value="1" min="1" step="1" class="form-control" oninput="onBudgetChange()">
             </div>
 
             <div class="form-group">
@@ -77,19 +87,23 @@
                 <input type="number" id="pub-days" value="1" min="1" step="1" class="form-control" oninput="calc()">
             </div>
 
-            <!-- التعديلات المطلوبة للزبون (تفاصيل الحملة) -->
             <div class="form-group">
                 <label>الهدف من الإعلان</label>
                 <select id="pub-obj" class="form-control">
-                    <option value="زيادة رسائل">زيادة رسائل</option>
-                    <option value="تفاعل ومشاركات">تفاعل ومشاركات</option>
-                    <option value="زيادة متابعين">زيادة متابعين للصفحة</option>
+                    <option value="تفاعل (لايكات و تعليقات)">تفاعل (لايكات و تعليقات)</option>
+                    <option value="رسائل (مبيعات)">رسائل (مبيعات)</option>
+                    <option value="زياده متابعين">زياده متابعين</option>
                 </select>
             </div>
 
             <div class="form-group">
-                <label>المدن المستهدفة</label>
-                <input type="text" id="pub-loc" placeholder="مثال: طرابلس وضواحيها، بنغازي، كل ليبيا..." class="form-control">
+                <label style="display: flex; justify-content: space-between;">
+                    <span>المدن المستهدفة</span>
+                    <span id="city-limit-info" style="font-size: 12px; color: #d97706;">(المسموح: مدينة واحدة)</span>
+                </label>
+                <div class="cities-grid" id="cities-container">
+                    <!-- تتولد المدن بالـ JS -->
+                </div>
             </div>
 
             <div class="form-group">
@@ -103,11 +117,9 @@
 
             <div class="form-group">
                 <label>طريقة الدفع والسداد</label>
-                <select id="pub-payment" class="form-control">
-                    <option value="تسليم للمندوب (كاش)">تسليم للمندوب (كاش)</option>
-                    <option value="خصم من الرصيد المودع">خصم من الرصيد المودع</option>
-                    <option value="تحويل بنكي / سداد / تداول">تحويل بنكي / سداد / تداول</option>
-                    <option value="دفع آجل (عملاء مسجلين)">دفع آجل (عملاء مسجلين)</option>
+                <select id="pub-payment" class="form-control" onchange="calc()">
+                    <option value="cash">تسليم للمندوب (كاش)</option>
+                    <option value="bank">تحويل بنكي / سداد / تداول (+5% عمولة)</option>
                 </select>
             </div>
 
@@ -151,54 +163,79 @@
         </div>
     </div>
 
-    <!-- المنظومة الداخلية -->
+    <!-- المنظومة الداخلية المحمية -->
     <div id="section-admin" class="admin-container hidden">
         <div id="pin-box" class="card" style="max-width: 400px; margin: 40px auto; text-align: center;">
-            <h3>المنظومة الداخلية المحمية</h3>
+            <h3>المنظومة الداخلية المالية</h3>
             <p style="font-size: 12px; color: #64748b; margin-bottom: 15px;">أدخل الرمز السري للوصول</p>
             <input type="password" id="pin-input" placeholder="••••" class="form-control" style="text-align: center; margin-bottom: 15px;">
             <button class="btn btn-navy" onclick="login()">دخول</button>
         </div>
 
         <div id="admin-main" class="hidden">
-            <div class="grid-3">
+            <!-- كروت المؤشرات المالية KPI -->
+            <div class="grid-kpi">
+                <div class="kpi-card">
+                    <span style="font-size: 12px; color: #64748b;">سعر بيع الدولار (الكاش)</span>
+                    <div class="kpi-val" id="kpi-selling-rate" style="color:#d97706;">0 د.ل</div>
+                </div>
+                <div class="kpi-card">
+                    <span style="font-size: 12px; color: #64748b;">متوسط تكلفة الشراء</span>
+                    <div class="kpi-val" id="kpi-cost-rate" style="color:#2563eb;">0 د.ل</div>
+                </div>
+                <div class="kpi-card">
+                    <span style="font-size: 12px; color: #64748b;">إجمالي الإيرادات المفلترة</span>
+                    <div class="kpi-val" id="kpi-total-revenue" style="color:#0f172a;">0 د.ل</div>
+                </div>
+                <div class="kpi-card">
+                    <span style="font-size: 12px; color: #64748b;">صافي الأرباح المفلترة</span>
+                    <div class="kpi-val" id="kpi-total-profit" style="color:#16a34a;">0 د.ل</div>
+                </div>
+            </div>
+
+            <!-- إدخال سعر الشراء وتحديث الدولار -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px;">
                 <div class="card">
-                    <label>سعر شراء الدولار اليوم (USD -> LYD)</label>
-                    <div style="display: flex; gap: 5px; margin-top: 10px;">
-                        <input type="number" id="adm-rate" step="0.01" class="form-control" placeholder="7.45">
-                        <button class="btn btn-navy" id="btn-save-rate" style="width: 80px;">حفظ</button>
+                    <h4 style="margin-bottom: 10px;">1. تحديث سعر بيع الدولار (الكاش الأساسي)</h4>
+                    <div style="display: flex; gap: 5px;">
+                        <input type="number" id="adm-rate" step="0.01" class="form-control" placeholder="مثال: 7.45">
+                        <button class="btn btn-navy" id="btn-save-rate" style="width: 100px;">حفظ</button>
                     </div>
                 </div>
                 <div class="card">
-                    <label>أرصدة النوران ومدير الإعلانات</label>
-                    <div style="display: flex; justify-content: space-between; margin-top: 15px; text-align: center;">
-                        <div><span style="font-size: 11px; color: #64748b;">بطاقة النوران</span><br><strong id="bal-nuran">$0</strong></div>
-                        <div><span style="font-size: 11px; color: #2563eb;">مدير الإعلانات</span><br><strong id="bal-admanager" style="color: #2563eb;">$0</strong></div>
-                    </div>
-                </div>
-                <div class="card">
-                    <label>شحن سريع للنوران</label>
-                    <div style="display: flex; gap: 5px; margin-top: 10px;">
-                        <input type="number" id="adm-recharge" placeholder="المبلغ $" class="form-control">
-                        <button class="btn btn-green" id="btn-do-recharge" style="width: 110px;">شحن وتفريغ</button>
+                    <h4 style="margin-bottom: 10px;">2. تسجيل عملية شراء دولار (لتحديد التكلفة)</h4>
+                    <div style="display: flex; gap: 5px;">
+                        <input type="number" id="buy-usd-amount" class="form-control" placeholder="الكمية ($)">
+                        <input type="number" id="buy-usd-rate" step="0.01" class="form-control" placeholder="سعر الشراء (د.ل)">
+                        <button class="btn btn-green" id="btn-add-buy" style="width: 110px;">تسجيل</button>
                     </div>
                 </div>
             </div>
+
+            <!-- فلتر التقارير المالية -->
+            <div class="card" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                <h4>جدول الحركة المالية والإعلانات</h4>
+                <div style="display: flex; gap: 8px;">
+                    <button class="btn btn-dark" style="width: auto; padding: 6px 12px; font-size: 12px;" onclick="setFilter('all')">الكل</button>
+                    <button class="btn btn-dark" style="width: auto; padding: 6px 12px; font-size: 12px;" onclick="setFilter('week')">هذا الأسبوع</button>
+                    <button class="btn btn-dark" style="width: auto; padding: 6px 12px; font-size: 12px;" onclick="setFilter('month')">هذا الشهر</button>
+                </div>
+            </div>
+
             <div class="card">
-                <h3>إدارة الطلبات والإعلانات الواردة</h3>
                 <div style="overflow-x: auto;">
                     <table>
                         <thead>
                             <tr>
                                 <th>التاريخ</th>
-                                <th>القيمة ($)</th>
-                                <th>الهدف</th>
-                                <th>المدن / الجنس</th>
+                                <th>الميزانية ($)</th>
+                                <th>الهدف/المدن</th>
                                 <th>طريقة الدفع</th>
-                                <th>الإجمالي (د.ل)</th>
+                                <th>سعر البيع (د.ل)</th>
+                                <th>التكلفة الفعلية</th>
+                                <th>صافي المربوح</th>
                                 <th>الرابط</th>
                                 <th>الحالة</th>
-                                <th>الإجراء</th>
                             </tr>
                         </thead>
                         <tbody id="orders-list"></tbody>
@@ -210,7 +247,64 @@
 
     <script>
         window.EX_RATE = 7.45;
-        window.AD_BAL = 0;
+        window.AVG_COST_RATE = 7.00; // سعر الشراء المفترض
+        window.CURRENT_FILTER = 'all';
+        window.ALL_ORDERS = [];
+
+        const LIBYAN_CITIES = [
+            "طرابلس", "بنغازي", "مصراتة", "الزاوية", "البيضاء", 
+            "سبها", "زليتن", "غريان", "أجدابيا", "طبرق", 
+            "درنة", "سرت", "صبراتة", "الخمس", "ترهونة"
+        ];
+
+        function getCityLimit(usd) {
+            if (usd < 5) return 1;
+            if (usd < 10) return 3;
+            if (usd < 20) return 5;
+            if (usd < 30) return 10;
+            return LIBYAN_CITIES.length;
+        }
+
+        function initCities() {
+            const container = document.getElementById('cities-container');
+            container.innerHTML = '';
+            LIBYAN_CITIES.forEach((city, idx) => {
+                const label = document.createElement('label');
+                label.className = 'city-item';
+                label.innerHTML = `<input type="checkbox" value="${city}" onchange="handleCitySelect(this)"> ${city}`;
+                container.appendChild(label);
+            });
+        }
+
+        function handleCitySelect(chk) {
+            const usd = parseFloat(document.getElementById('pub-usd').value) || 0;
+            const limit = getCityLimit(usd);
+            const selected = document.querySelectorAll('#cities-container input[type="checkbox"]:checked');
+            
+            if (selected.length > limit) {
+                chk.checked = false;
+                alert(`الميزانية الحالية ($${usd}) تسمح باختيار ${limit} مدن كأقصى حد!`);
+            }
+        }
+
+        function onBudgetChange() {
+            const usd = parseFloat(document.getElementById('pub-usd').value) || 0;
+            const limit = getCityLimit(usd);
+            document.getElementById('city-limit-info').innerText = `(المسموح: ${limit === LIBYAN_CITIES.length ? 'كل المدن' : limit + ' مدن'})`;
+            
+            // إعادة ضبط التحديد إذا تجاوز الحد المسموح
+            const selected = document.querySelectorAll('#cities-container input[type="checkbox"]:checked');
+            if (selected.length > limit) {
+                selected.forEach((chk, i) => { if (i >= limit) chk.checked = false; });
+            }
+            calc();
+        }
+
+        function getSelectedCities() {
+            const selected = document.querySelectorAll('#cities-container input[type="checkbox"]:checked');
+            const arr = Array.from(selected).map(c => c.value);
+            return arr.length > 0 ? arr.join('، ') : "غير محدد";
+        }
 
         function showTab(t) {
             if(t === 'pub') {
@@ -238,16 +332,24 @@
         function calc() {
             var usd = parseFloat(document.getElementById('pub-usd').value) || 0;
             var days = parseInt(document.getElementById('pub-days').value) || 0;
+            var payMethod = document.getElementById('pub-payment').value;
             var valMsg = document.getElementById('div-validation-msg');
 
             var isValid = (usd > 0) && (days > 0) && (Number.isInteger(usd / days));
             if (!isValid && (usd > 0 || days > 0)) { valMsg.classList.remove('hidden'); } else { valMsg.classList.add('hidden'); }
 
-            var total = usd * (window.EX_RATE * 1.20);
-            var roundedTotal = roundToFive(total); 
+            // الحسبة الأساسية: سعر البيع بالكاش + 20%
+            var totalCash = usd * (window.EX_RATE * 1.20);
+            
+            // إذا كان الدفع تحويل بنكي تضاف 5% زيادة فوق المبلغ
+            if (payMethod === 'bank') {
+                totalCash = totalCash * 1.05;
+            }
+
+            var roundedTotal = roundToFive(totalCash); 
             
             document.getElementById('res-total').innerText = roundedTotal + " د.ل";
-            document.getElementById('res-day-lyd').innerText = days > 0 ? (roundedTotal / days) + " د.ل" : "0 د.ل";
+            document.getElementById('res-day-lyd').innerText = days > 0 ? (roundedTotal / days).toFixed(1) + " د.ل" : "0 د.ل";
             document.getElementById('res-day-usd').innerText = "$" + (days > 0 ? (usd / days) : 0);
         }
 
@@ -258,11 +360,16 @@
             navigator.clipboard.writeText(copyText.value);
             alert("تم نسخ الاسم بنجاح: " + copyText.value);
         }
+
+        window.onload = function() {
+            initCities();
+            onBudgetChange();
+        };
     </script>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, doc, setDoc, onSnapshot, collection, addDoc, serverTimestamp, query, orderBy, updateDoc } 
+        import { getFirestore, doc, setDoc, onSnapshot, collection, addDoc, serverTimestamp, query, orderBy } 
             from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
@@ -271,102 +378,4 @@
             projectId: "xmedia-db",
             storageBucket: "xmedia-db.firebasestorage.app",
             messagingSenderId: "76794291171",
-            appId: "1:76794291171:web:47cdfab692b937c6e176d6"
-        };
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-
-        document.getElementById('btn-save-rate').onclick = async () => {
-            var r = parseFloat(document.getElementById('adm-rate').value);
-            if(r > 0) {
-                await setDoc(doc(db, "settings", "config"), { exchangeRate: r, adManagerBalance: window.AD_BAL }, { merge: true });
-                alert("تم الحفظ بنجاح!");
-            }
-        };
-
-        document.getElementById('btn-do-recharge').onclick = async () => {
-            var amt = parseFloat(document.getElementById('adm-recharge').value) || 0;
-            if(amt > 0) {
-                var newB = window.AD_BAL + amt;
-                await setDoc(doc(db, "settings", "config"), { adManagerBalance: newB, exchangeRate: window.EX_RATE }, { merge: true });
-                document.getElementById('adm-recharge').value = '';
-                alert("تم الشحن!");
-            }
-        };
-
-        document.getElementById('btn-submit').onclick = async () => {
-            var usd = parseFloat(document.getElementById('pub-usd').value) || 0;
-            var days = parseInt(document.getElementById('pub-days').value) || 0;
-            var obj = document.getElementById('pub-obj').value;
-            var loc = document.getElementById('pub-loc').value.trim() || "غير محدد";
-            var gender = document.getElementById('pub-gender').value;
-            var payment = document.getElementById('pub-payment').value;
-            var link = document.getElementById('pub-link').value.trim();
-
-            if (usd <= 0 || days <= 0 || !Number.isInteger(usd / days)) {
-                alert("يرجى التأكد من البيانات (يجب أن يكون ناتج القسمة صحيحاً)!");
-                return;
-            }
-            if(!link) { alert("رابط المنشور مطلوب!"); return; }
-
-            var total = usd * (window.EX_RATE * 1.20);
-            var roundedTotal = Math.round(total / 5) * 5;
-
-            // حفظ الطلب بالتفاصيل الجديدة في الفايربيس
-            await addDoc(collection(db, "orders"), { 
-                amountUsd: usd, 
-                days: days, 
-                objective: obj,
-                location: loc,
-                gender: gender,
-                paymentMethod: payment,
-                link: link, 
-                totalLyd: roundedTotal, 
-                status: 'new', 
-                createdAt: serverTimestamp() 
-            });
-            
-            // تجهيز نص رسالة الواتساب للزبون
-            var msg = "مرحباً X-Media! أرغب في حجز إعلان جديد:\n" +
-                      "▪ الميزانية والمدة: $" + usd + " لمدة " + days + " أيام\n" +
-                      "▪ الهدف من الإعلان: " + obj + "\n" +
-                      "▪ المدن والجنس: " + loc + " (" + gender + ")\n" +
-                      "▪ طريقة الدفع: " + payment + "\n" +
-                      "▪ المبلغ المطلوب: " + roundedTotal + " د.ل\n" +
-                      "▪ رابط المنشور: " + link;
-
-            window.open("https://wa.me/218910756281?text=" + encodeURIComponent(msg), '_blank');
-        };
-
-        onSnapshot(doc(db, "settings", "config"), (snap) => {
-            if(snap.exists()) {
-                window.EX_RATE = snap.data().exchangeRate || 7.45;
-                window.AD_BAL = snap.data().adManagerBalance || 0;
-                document.getElementById('adm-rate').value = window.EX_RATE;
-                document.getElementById('bal-admanager').innerText = "$" + window.AD_BAL;
-                calc();
-            }
-        });
-
-        onSnapshot(query(collection(db, "orders"), orderBy("createdAt", "desc")), (snap) => {
-            var list = document.getElementById('orders-list');
-            list.innerHTML = '';
-            snap.forEach(d => {
-                var o = d.data();
-                var tr = document.createElement('tr');
-                tr.innerHTML = `<td>${o.createdAt ? new Date(o.createdAt.toDate()).toLocaleDateString('ar-LY') : 'الآن'}</td>
-                                <td>$${o.amountUsd} (${o.days} أيام)</td>
-                                <td><span class="badge" style="background:#e2e8f0; padding:2px 6px; border-radius:4px; font-weight:bold;">${o.objective || 'رسائل'}</span></td>
-                                <td>${o.location || '-'}<br><small style="color:#64748b;">${o.gender || 'الكل'}</small></td>
-                                <td><strong style="color:#2563eb;">${o.paymentMethod || 'كاش'}</strong></td>
-                                <td>${o.totalLyd} د.ل</td>
-                                <td><a href="${o.link}" target="_blank">رابط</a></td>
-                                <td>${o.status === 'active' ? 'نشط' : 'جديد'}</td>
-                                <td id="act-${d.id}"></td>`;
-                list.appendChild(tr);
-                if(o.status === 'new') {
-                    var btn = document.createElement('button');
-                    btn.innerText = "تفعيل"; btn.className = "btn btn-green"; btn.style.padding = "4px 8px"; btn.style.fontSize = "12px";
-                    btn.onclick = async () => {
-                        await updateDoc(doc(db, "settings", "config"), { adManagerBalance: window.AD_BAL - o.amountUsd });
-                        await upd
+    
