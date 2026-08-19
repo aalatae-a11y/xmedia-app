@@ -25,13 +25,12 @@
         .form-control { width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 15px; outline: none; }
         .form-control:focus { border-color: #d97706; }
 
-        /* تصميم القائمة المنسدلة الخيار للمدن */
-        .city-select-box { position: relative; width: 100%; }
-        .city-select-btn { width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 8px; background: #fff; text-align: right; cursor: pointer; font-size: 14px; display: flex; justify-content: space-between; align-items: center; }
-        .city-dropdown { display: none; position: absolute; top: 100%; left: 0; right: 0; background: white; border: 1px solid #cbd5e1; border-radius: 8px; max-height: 220px; overflow-y: auto; z-index: 100; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); padding: 8px; margin-top: 4px; }
-        .city-dropdown.show { display: block; }
-        .city-option { padding: 6px 10px; display: flex; align-items: center; gap: 8px; cursor: pointer; border-bottom: 1px solid #f1f5f9; font-size: 13px; }
-        .city-option:hover { background: #f8fafc; }
+        /* تصميم مربع اختيار المدن */
+        .city-select-box { border: 1px solid #cbd5e1; border-radius: 8px; background: #fff; padding: 10px; }
+        .city-select-box select { width: 100%; padding: 8px; border: 1px solid #e2e8f0; border-radius: 6px; font-size: 14px; outline: none; }
+        .city-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 8px; }
+        .city-tag { background: #eff6ff; color: #1e40af; border: 1px solid #bfdbfe; padding: 3px 8px; border-radius: 15px; font-size: 12px; display: flex; align-items: center; gap: 5px; }
+        .city-tag span { cursor: pointer; font-weight: bold; color: #ef4444; }
 
         .btn { width: 100%; padding: 12px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 14px; text-align: center; text-decoration: none; display: inline-block; }
         .btn-green { background: #16a34a; color: white; }
@@ -101,20 +100,17 @@
                 </select>
             </div>
 
-            <!-- قائمة المدن المنسدلة بالسهم -->
+            <!-- قائمة اختيار المدن المنسدلة بأناقة -->
             <div class="form-group">
                 <label style="display: flex; justify-content: space-between;">
                     <span>المدن المستهدفة</span>
                     <span id="city-limit-info" style="font-size: 12px; color: #d97706;">(المسموح: مدينة واحدة)</span>
                 </label>
                 <div class="city-select-box">
-                    <button type="button" class="city-select-btn" onclick="toggleCityDropdown()">
-                        <span id="city-selected-text">اختر المدن المستهدفة...</span>
-                        <span>▼</span>
-                    </button>
-                    <div class="city-dropdown" id="cities-dropdown-list">
-                        <!-- تتولد القائمة المنسدلة بالـ JS -->
-                    </div>
+                    <select id="city-dropdown-select" onchange="addCityFromDropdown()">
+                        <option value="">-- اضغط هنا لاختيار مدينة من القائمة --</option>
+                    </select>
+                    <div class="city-tags" id="selected-city-tags"></div>
                 </div>
             </div>
 
@@ -258,8 +254,8 @@
         window.AVG_COST_RATE = 7.00;
         window.CURRENT_FILTER = 'all';
         window.ALL_ORDERS = [];
+        window.SELECTED_CITIES = [];
 
-        // قائمة الـ 55 مدينة بالكامل بنفس الترتيب المطلوبة
         const LIBYAN_CITIES = [
             "طرابلس", "ضواحي طرابلس", "مصراتة", "زليتن", "الخمس", "الزاوية", "ورشفانة", "صرمان", 
             "صبراتة", "العجيلات", "زوارة", "زلطن", "رقدالين", "غريان", "ككلة", "الرجبان", 
@@ -278,55 +274,56 @@
             return LIBYAN_CITIES.length;
         }
 
-        function initCitiesDropdown() {
-            const container = document.getElementById('cities-dropdown-list');
-            container.innerHTML = '';
+        function initCityDropdownSelect() {
+            const select = document.getElementById('city-dropdown-select');
+            select.innerHTML = '<option value="">-- اضغط هنا لاختيار مدينة من القائمة --</option>';
             LIBYAN_CITIES.forEach((city) => {
-                const div = document.createElement('label');
-                div.className = 'city-option';
-                div.innerHTML = `<input type="checkbox" value="${city}" onchange="handleCitySelect(this)"> ${city}`;
-                container.appendChild(div);
+                const opt = document.createElement('option');
+                opt.value = city;
+                opt.innerText = city;
+                select.appendChild(opt);
             });
         }
 
-        function toggleCityDropdown() {
-            document.getElementById('cities-dropdown-list').classList.toggle('show');
-        }
+        function addCityFromDropdown() {
+            const select = document.getElementById('city-dropdown-select');
+            const city = select.value;
+            if (!city) return;
 
-        // إغلاق القائمة المنسدلة إذا ضغط المستخدم خارجها
-        window.onclick = function(event) {
-            if (!event.target.matches('.city-select-btn') && !event.target.matches('.city-select-btn *') && !event.target.matches('.city-dropdown') && !event.target.matches('.city-dropdown *')) {
-                var dropdowns = document.getElementsByClassName("city-dropdown");
-                for (var i = 0; i < dropdowns.length; i++) {
-                    var openDropdown = dropdowns[i];
-                    if (openDropdown.classList.contains('show')) {
-                        openDropdown.classList.remove('show');
-                    }
-                }
-            }
-        }
-
-        function handleCitySelect(chk) {
             const usd = parseFloat(document.getElementById('pub-usd').value) || 0;
             const limit = getCityLimit(usd);
-            const selected = document.querySelectorAll('#cities-dropdown-list input[type="checkbox"]:checked');
-            
-            if (selected.length > limit) {
-                chk.checked = false;
-                alert(`الميزانية الحالية ($${usd}) تسمح باختيار ${limit} مدن كأقصى حد!`);
+
+            if (window.SELECTED_CITIES.includes(city)) {
+                alert("هذه المدينة مختارة بالفعل!");
+                select.value = "";
+                return;
             }
-            updateCitySelectedText();
+
+            if (window.SELECTED_CITIES.length >= limit) {
+                alert(`الميزانية الحالية ($${usd}) تسمح باختيار ${limit} مدن كأقصى حد!`);
+                select.value = "";
+                return;
+            }
+
+            window.SELECTED_CITIES.push(city);
+            renderSelectedCityTags();
+            select.value = "";
         }
 
-        function updateCitySelectedText() {
-            const selected = document.querySelectorAll('#cities-dropdown-list input[type="checkbox"]:checked');
-            const arr = Array.from(selected).map(c => c.value);
-            const textSpan = document.getElementById('city-selected-text');
-            if(arr.length === 0) {
-                textSpan.innerText = "اختر المدن المستهدفة...";
-            } else {
-                textSpan.innerText = `تم اختيار ${arr.length} مدينة: (` + arr.join('، ') + `)`;
-            }
+        function removeCity(city) {
+            window.SELECTED_CITIES = window.SELECTED_CITIES.filter(c => c !== city);
+            renderSelectedCityTags();
+        }
+
+        function renderSelectedCityTags() {
+            const container = document.getElementById('selected-city-tags');
+            container.innerHTML = '';
+            window.SELECTED_CITIES.forEach(city => {
+                const tag = document.createElement('div');
+                tag.className = 'city-tag';
+                tag.innerHTML = `${city} <span onclick="removeCity('${city}')">✕</span>`;
+                container.appendChild(tag);
+            });
         }
 
         function onBudgetChange() {
@@ -334,18 +331,15 @@
             const limit = getCityLimit(usd);
             document.getElementById('city-limit-info').innerText = `(المسموح: ${limit === LIBYAN_CITIES.length ? 'كل المدن' : limit + ' مدن'})`;
             
-            const selected = document.querySelectorAll('#cities-dropdown-list input[type="checkbox"]:checked');
-            if (selected.length > limit) {
-                selected.forEach((chk, i) => { if (i >= limit) chk.checked = false; });
-                updateCitySelectedText();
+            if (window.SELECTED_CITIES.length > limit) {
+                window.SELECTED_CITIES = window.SELECTED_CITIES.slice(0, limit);
+                renderSelectedCityTags();
             }
             calc();
         }
 
-        function getSelectedCities() {
-            const selected = document.querySelectorAll('#cities-dropdown-list input[type="checkbox"]:checked');
-            const arr = Array.from(selected).map(c => c.value);
-            return arr.length > 0 ? arr.join('، ') : "غير محدد";
+        function getSelectedCitiesText() {
+            return window.SELECTED_CITIES.length > 0 ? window.SELECTED_CITIES.join('، ') : "غير محدد";
         }
 
         function showTab(t) {
@@ -359,4 +353,29 @@
                 document.getElementById('section-admin').classList.remove('hidden');
                 document.getElementById('btn-tab-adm').classList.add('active');
                 document.getElementById('btn-tab-pub').classList.remove('active');
+            }
+        }
+
+        function login() {
+            var pin = document.getElementById('pin-input').value;
+            if(pin === "5412") {
+                document.getElementById('pin-box').classList.add('hidden');
+                document.getElementById('admin-main').classList.remove('hidden');
+            } else { 
+                alert("رمز خاطئ!"); 
+            }
+        }
+
+        function roundToFive(num) { return Math.round(num / 5) * 5; }
+
+        function calc() {
+            var usd = parseFloat(document.getElementById('pub-usd').value) || 0;
+            var days = parseInt(document.getElementById('pub-days').value) || 0;
+            var payMethod = document.getElementById('pub-payment').value;
+            var valMsg = document.getElementById('div-validation-msg');
+
+            var isValid = (usd > 0) && (days > 0) && (Number.isInteger(usd / days));
+            if (!isValid && (usd > 0 || days > 0)) { valMsg.classList.remove('hidden'); } else { valMsg.classList.add('hidden'); }
+
+            var totalCash = usd * (window.EX_RATE * 1.20);
        
