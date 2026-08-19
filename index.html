@@ -25,8 +25,13 @@
         .form-control { width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 15px; outline: none; }
         .form-control:focus { border-color: #d97706; }
 
-        .cities-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 8px; background: #f8fafc; padding: 12px; border-radius: 8px; border: 1px solid #cbd5e1; max-height: 180px; overflow-y: auto; }
-        .city-item { font-size: 13px; display: flex; align-items: center; gap: 5px; cursor: pointer; }
+        /* تصميم القائمة المنسدلة الخيار للمدن */
+        .city-select-box { position: relative; width: 100%; }
+        .city-select-btn { width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 8px; background: #fff; text-align: right; cursor: pointer; font-size: 14px; display: flex; justify-content: space-between; align-items: center; }
+        .city-dropdown { display: none; position: absolute; top: 100%; left: 0; right: 0; background: white; border: 1px solid #cbd5e1; border-radius: 8px; max-height: 220px; overflow-y: auto; z-index: 100; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); padding: 8px; margin-top: 4px; }
+        .city-dropdown.show { display: block; }
+        .city-option { padding: 6px 10px; display: flex; align-items: center; gap: 8px; cursor: pointer; border-bottom: 1px solid #f1f5f9; font-size: 13px; }
+        .city-option:hover { background: #f8fafc; }
 
         .btn { width: 100%; padding: 12px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 14px; text-align: center; text-decoration: none; display: inline-block; }
         .btn-green { background: #16a34a; color: white; }
@@ -96,13 +101,20 @@
                 </select>
             </div>
 
+            <!-- قائمة المدن المنسدلة بالسهم -->
             <div class="form-group">
                 <label style="display: flex; justify-content: space-between;">
                     <span>المدن المستهدفة</span>
                     <span id="city-limit-info" style="font-size: 12px; color: #d97706;">(المسموح: مدينة واحدة)</span>
                 </label>
-                <div class="cities-grid" id="cities-container">
-                    <!-- تتولد المدن بالـ JS -->
+                <div class="city-select-box">
+                    <button type="button" class="city-select-btn" onclick="toggleCityDropdown()">
+                        <span id="city-selected-text">اختر المدن المستهدفة...</span>
+                        <span>▼</span>
+                    </button>
+                    <div class="city-dropdown" id="cities-dropdown-list">
+                        <!-- تتولد القائمة المنسدلة بالـ JS -->
+                    </div>
                 </div>
             </div>
 
@@ -140,7 +152,6 @@
                 </div>
             </div>
 
-            <!-- صندوق إضافة الأدمن المساعد للزبون -->
             <div class="access-box">
                 <div class="access-header">
                     <span>🔑 خطوة هامة: إضافة حسابنا كمدير في صفحتك</span>
@@ -173,7 +184,6 @@
         </div>
 
         <div id="admin-main" class="hidden">
-            <!-- كروت المؤشرات المالية KPI -->
             <div class="grid-kpi">
                 <div class="kpi-card">
                     <span style="font-size: 12px; color: #64748b;">سعر بيع الدولار (الكاش)</span>
@@ -193,13 +203,12 @@
                 </div>
             </div>
 
-            <!-- إدخال سعر الشراء وتحديث الدولار -->
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px;">
                 <div class="card">
                     <h4 style="margin-bottom: 10px;">1. تحديث سعر بيع الدولار (الكاش الأساسي)</h4>
                     <div style="display: flex; gap: 5px;">
                         <input type="number" id="adm-rate" step="0.01" class="form-control" placeholder="مثال: 7.45">
-                        <button class="btn btn-navy" id="btn-save-rate" style="width: 100px;">حفظ</button>
+                        <button type="button" class="btn btn-navy" id="btn-save-rate" style="width: 100px;">حفظ</button>
                     </div>
                 </div>
                 <div class="card">
@@ -207,12 +216,11 @@
                     <div style="display: flex; gap: 5px;">
                         <input type="number" id="buy-usd-amount" class="form-control" placeholder="الكمية ($)">
                         <input type="number" id="buy-usd-rate" step="0.01" class="form-control" placeholder="سعر الشراء (د.ل)">
-                        <button class="btn btn-green" id="btn-add-buy" style="width: 110px;">تسجيل</button>
+                        <button type="button" class="btn btn-green" id="btn-add-buy" style="width: 110px;">تسجيل</button>
                     </div>
                 </div>
             </div>
 
-            <!-- فلتر التقارير المالية -->
             <div class="card" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
                 <h4>جدول الحركة المالية والإعلانات</h4>
                 <div style="display: flex; gap: 8px;">
@@ -247,14 +255,19 @@
 
     <script>
         window.EX_RATE = 7.45;
-        window.AVG_COST_RATE = 7.00; // سعر الشراء المفترض
+        window.AVG_COST_RATE = 7.00;
         window.CURRENT_FILTER = 'all';
         window.ALL_ORDERS = [];
 
+        // قائمة الـ 55 مدينة بالكامل بنفس الترتيب المطلوبة
         const LIBYAN_CITIES = [
-            "طرابلس", "بنغازي", "مصراتة", "الزاوية", "البيضاء", 
-            "سبها", "زليتن", "غريان", "أجدابيا", "طبرق", 
-            "درنة", "سرت", "صبراتة", "الخمس", "ترهونة"
+            "طرابلس", "ضواحي طرابلس", "مصراتة", "زليتن", "الخمس", "الزاوية", "ورشفانة", "صرمان", 
+            "صبراتة", "العجيلات", "زوارة", "زلطن", "رقدالين", "غريان", "ككلة", "الرجبان", 
+            "الزنتان", "نالوت", "تيجي", "الحرابة", "الرياينة", "يفرن", "جادو", "قلعة", 
+            "ترهونة", "بني وليد", "مسلاتة", "سرت", "تاورغاء", "البريقة", "بن جواد", "بنغازي", 
+            "ضواحي بنغازي", "اجدابيا", "المرج", "البيضاء", "قمينس", "توكرة", "شحات", "سوسة", 
+            "درنة", "طبرق", "الجفرة", "هون", "سوكنة", "زلة", "براك الشاطئ", "سبها", 
+            "أوباري", "الكفرة", "أم الأرانب", "تراغن", "مرزق", "غات", "ودان"
         ];
 
         function getCityLimit(usd) {
@@ -265,25 +278,54 @@
             return LIBYAN_CITIES.length;
         }
 
-        function initCities() {
-            const container = document.getElementById('cities-container');
+        function initCitiesDropdown() {
+            const container = document.getElementById('cities-dropdown-list');
             container.innerHTML = '';
-            LIBYAN_CITIES.forEach((city, idx) => {
-                const label = document.createElement('label');
-                label.className = 'city-item';
-                label.innerHTML = `<input type="checkbox" value="${city}" onchange="handleCitySelect(this)"> ${city}`;
-                container.appendChild(label);
+            LIBYAN_CITIES.forEach((city) => {
+                const div = document.createElement('label');
+                div.className = 'city-option';
+                div.innerHTML = `<input type="checkbox" value="${city}" onchange="handleCitySelect(this)"> ${city}`;
+                container.appendChild(div);
             });
+        }
+
+        function toggleCityDropdown() {
+            document.getElementById('cities-dropdown-list').classList.toggle('show');
+        }
+
+        // إغلاق القائمة المنسدلة إذا ضغط المستخدم خارجها
+        window.onclick = function(event) {
+            if (!event.target.matches('.city-select-btn') && !event.target.matches('.city-select-btn *') && !event.target.matches('.city-dropdown') && !event.target.matches('.city-dropdown *')) {
+                var dropdowns = document.getElementsByClassName("city-dropdown");
+                for (var i = 0; i < dropdowns.length; i++) {
+                    var openDropdown = dropdowns[i];
+                    if (openDropdown.classList.contains('show')) {
+                        openDropdown.classList.remove('show');
+                    }
+                }
+            }
         }
 
         function handleCitySelect(chk) {
             const usd = parseFloat(document.getElementById('pub-usd').value) || 0;
             const limit = getCityLimit(usd);
-            const selected = document.querySelectorAll('#cities-container input[type="checkbox"]:checked');
+            const selected = document.querySelectorAll('#cities-dropdown-list input[type="checkbox"]:checked');
             
             if (selected.length > limit) {
                 chk.checked = false;
                 alert(`الميزانية الحالية ($${usd}) تسمح باختيار ${limit} مدن كأقصى حد!`);
+            }
+            updateCitySelectedText();
+        }
+
+        function updateCitySelectedText() {
+            const selected = document.querySelectorAll('#cities-dropdown-list input[type="checkbox"]:checked');
+            const arr = Array.from(selected).map(c => c.value);
+            const textSpan = document.getElementById('city-selected-text');
+            if(arr.length === 0) {
+                textSpan.innerText = "اختر المدن المستهدفة...";
+            } else {
+                textSpan.innerText = `تم اختيار ${arr.length} مدينة: (` + arr.join('، ') + `)`;
             }
         }
 
@@ -292,16 +334,16 @@
             const limit = getCityLimit(usd);
             document.getElementById('city-limit-info').innerText = `(المسموح: ${limit === LIBYAN_CITIES.length ? 'كل المدن' : limit + ' مدن'})`;
             
-            // إعادة ضبط التحديد إذا تجاوز الحد المسموح
-            const selected = document.querySelectorAll('#cities-container input[type="checkbox"]:checked');
+            const selected = document.querySelectorAll('#cities-dropdown-list input[type="checkbox"]:checked');
             if (selected.length > limit) {
                 selected.forEach((chk, i) => { if (i >= limit) chk.checked = false; });
+                updateCitySelectedText();
             }
             calc();
         }
 
         function getSelectedCities() {
-            const selected = document.querySelectorAll('#cities-container input[type="checkbox"]:checked');
+            const selected = document.querySelectorAll('#cities-dropdown-list input[type="checkbox"]:checked');
             const arr = Array.from(selected).map(c => c.value);
             return arr.length > 0 ? arr.join('، ') : "غير محدد";
         }
@@ -317,65 +359,4 @@
                 document.getElementById('section-admin').classList.remove('hidden');
                 document.getElementById('btn-tab-adm').classList.add('active');
                 document.getElementById('btn-tab-pub').classList.remove('active');
-            }
-        }
-
-        function login() {
-            if(document.getElementById('pin-input').value === "5412") {
-                document.getElementById('pin-box').classList.add('hidden');
-                document.getElementById('admin-main').classList.remove('hidden');
-            } else { alert("رمز خاطئ!"); }
-        }
-
-        function roundToFive(num) { return Math.round(num / 5) * 5; }
-
-        function calc() {
-            var usd = parseFloat(document.getElementById('pub-usd').value) || 0;
-            var days = parseInt(document.getElementById('pub-days').value) || 0;
-            var payMethod = document.getElementById('pub-payment').value;
-            var valMsg = document.getElementById('div-validation-msg');
-
-            var isValid = (usd > 0) && (days > 0) && (Number.isInteger(usd / days));
-            if (!isValid && (usd > 0 || days > 0)) { valMsg.classList.remove('hidden'); } else { valMsg.classList.add('hidden'); }
-
-            // الحسبة الأساسية: سعر البيع بالكاش + 20%
-            var totalCash = usd * (window.EX_RATE * 1.20);
-            
-            // إذا كان الدفع تحويل بنكي تضاف 5% زيادة فوق المبلغ
-            if (payMethod === 'bank') {
-                totalCash = totalCash * 1.05;
-            }
-
-            var roundedTotal = roundToFive(totalCash); 
-            
-            document.getElementById('res-total').innerText = roundedTotal + " د.ل";
-            document.getElementById('res-day-lyd').innerText = days > 0 ? (roundedTotal / days).toFixed(1) + " د.ل" : "0 د.ل";
-            document.getElementById('res-day-usd').innerText = "$" + (days > 0 ? (usd / days) : 0);
-        }
-
-        function copyAccName() {
-            var copyText = document.getElementById("acc-name");
-            copyText.select();
-            copyText.setSelectionRange(0, 99999);
-            navigator.clipboard.writeText(copyText.value);
-            alert("تم نسخ الاسم بنجاح: " + copyText.value);
-        }
-
-        window.onload = function() {
-            initCities();
-            onBudgetChange();
-        };
-    </script>
-
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, doc, setDoc, onSnapshot, collection, addDoc, serverTimestamp, query, orderBy } 
-            from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyCeRCQr0KSM9uUVVxa-DJbAc4epzRjCNDM",
-            authDomain: "xmedia-db.firebaseapp.com",
-            projectId: "xmedia-db",
-            storageBucket: "xmedia-db.firebasestorage.app",
-            messagingSenderId: "76794291171",
-    
+       
